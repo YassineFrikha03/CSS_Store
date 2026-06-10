@@ -1,0 +1,73 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const AdminOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/orders');
+      setOrders(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const handleUpdateStatus = async (id, currentStatus) => {
+    const nextStatus = currentStatus === 'Livré' ? 'En attente' : 'Livré';
+    try {
+      // Met à jour le statut dans ton modèle MongoDB Order
+      await axios.put(`http://localhost:5000/api/orders/${id}`, { status: nextStatus });
+      fetchOrders(); // Actualise l'affichage
+    } catch (err) {
+      alert("Erreur lors du changement de statut");
+    }
+  };
+
+  if (loading) return <p className="text-xs font-mono text-zinc-400 p-4">Chargement des paniers...</p>;
+
+  return (
+    <div className="text-left">
+      <h2 className="text-xl font-black uppercase tracking-wider mb-6">Suivi des Commandes ({orders.length})</h2>
+      <div className="bg-white border border-zinc-200 divide-y divide-zinc-100">
+        {orders.map(order => {
+          const price = order.totalPrice || order.total || 0;
+          const isDone = order.status === 'Livré' || order.isDelivered;
+
+          return (
+            <div key={order._id} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-medium gap-4 hover:bg-zinc-50/60 transition-colors">
+              <div>
+                <span className="font-mono font-black text-black block text-sm">#{order._id.slice(-6).toUpperCase()}</span>
+                <span className="text-zinc-500 mt-1 block">
+                  {order.user?.name || "Supporter CSS"} — {order.shippingAddress?.city || "Tunisie"}
+                </span>
+              </div>
+              <div className="flex items-center gap-6 justify-between sm:justify-end">
+                <span className="font-mono font-black text-base text-black">{price},000 DT</span>
+                
+                {/* Bouton d'action pour basculer le statut */}
+                <button
+                  onClick={() => handleUpdateStatus(order._id, order.status)}
+                  className={`px-3 py-1.5 font-bold uppercase text-[9px] tracking-wider transition-all cursor-pointer ${
+                    isDone ? 'bg-zinc-100 text-zinc-800 hover:bg-zinc-200' : 'bg-black text-white hover:bg-zinc-800'
+                  }`}
+                >
+                  {order.status || 'En attente'} 🔄
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default AdminOrders;

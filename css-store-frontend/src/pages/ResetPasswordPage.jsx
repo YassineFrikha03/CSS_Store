@@ -1,0 +1,146 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import imagelogin from '../assets/imagelogin.png';
+import Logo from '../assets/logocss.png';
+
+const ResetPasswordPage = () => {
+  const { token } = useParams(); // 🟢 Récupère automatiquement le token sécurisé depuis l'URL du mail
+  const navigate = useNavigate();
+  
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (password !== confirmPassword) {
+      setError('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Appel à la nouvelle route Backend que nous venons de créer
+      const res = await axios.post(`http://localhost:5000/api/users/reset-password/${token}`, { password });
+      
+      setSuccess(res.data.message || "Mot de passe réinitialisé avec succès ! 🖤🤍");
+      setTimeout(() => {
+        navigate('/login'); // Redirection automatique vers la page de connexion après 3 secondes
+      }, 3000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Le lien est invalide ou a expiré.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-full min-h-screen flex bg-white font-sans text-left select-none items-stretch">
+      
+      {/* 🖤 CÔTÉ GAUCHE : IDENTIQUE AU DESIGN D'AUTHENTIFICATION (w-5/12) */}
+      <div className="hidden md:flex md:w-5/12 bg-black text-white p-16 flex-col justify-between relative min-h-screen">
+        <img src={imagelogin} alt="Image de connexion" className="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale contrast-125 pointer-events-none" />
+
+        <div className="z-10 flex items-center gap-5 border-b border-zinc-800 pb-6">
+          <img 
+            src={Logo} 
+            alt="Logo du Club Sportif Sfaxien" 
+            className="w-24 h-24 object-contain filter drop-shadow-[0_4px_6px_rgba(255,255,255,0.1)]" 
+          />
+          <div>
+            <h2 className="font-black text-xs uppercase tracking-widest text-zinc-400">Sécurité Compte</h2>
+            <h1 className="font-black text-sm uppercase tracking-tight text-white -mt-0.5">Club Sportif Sfaxien</h1>
+          </div>
+        </div>
+
+        <div className="z-10 space-y-6 my-auto max-w-sm">
+          <h2 className="text-4xl font-black uppercase tracking-tight leading-none text-white">
+            Nouveau <br />Départ.
+          </h2>
+          <p className="text-xs text-zinc-400 font-medium leading-relaxed">
+            Configurez un mot de passe robuste pour protéger vos données personnelles, vos favoris et vos commandes sur la boutique officielle.
+          </p>
+        </div>
+
+        <div className="z-10 text-[10px] font-mono tracking-widest text-zinc-600 font-black uppercase">
+          Plus qu'un club, une légende.
+        </div>
+      </div>
+
+      {/* ⚪ CÔTÉ DROIT : ZONE DU NOUVEAU FORMULAIRE EN PLEIN ÉCRAN (w-7/12) */}
+      <div className="w-full md:w-7/12 flex items-center justify-center bg-white min-h-screen">
+        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12">
+          
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-black uppercase tracking-wider text-black font-sans">Nouveau mot de passe</h1>
+            <p className="text-xs text-zinc-400 font-medium mt-1.5">Saisissez vos nouveaux identifiants de sécurité</p>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono p-3 mb-6 font-bold">
+              ⚠️ {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-green-50 border border-green-200 text-green-700 text-[11px] font-mono p-3 mb-6 font-bold👁️">
+              🎉 {success} (Redirection vers la page de connexion...)
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5 text-xs font-medium w-full">
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-2">Nouveau mot de passe</label>
+              <input 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••" 
+                required 
+                autoComplete="new-password"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3.5 text-xs text-black outline-none transition-all rounded-none font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-2">Confirmer le mot de passe</label>
+              <input 
+                type="password" 
+                value={confirmPassword} 
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••" 
+                required 
+                autoComplete="new-password"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3.5 text-xs text-black outline-none transition-all rounded-none font-medium"
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading || success}
+              className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-colors cursor-pointer pt-4 rounded-none disabled:bg-zinc-400 border-none"
+            >
+              {loading ? "Enregistrement..." : "Mettre à jour le mot de passe"}
+            </button>
+          </form>
+
+          <p className="text-center text-[11px] text-zinc-400 mt-8 font-medium">
+            Retourner à la{' '}
+            <Link to="/login" className="text-black font-black underline hover:text-zinc-600">
+              page de connexion
+            </Link>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ResetPasswordPage;

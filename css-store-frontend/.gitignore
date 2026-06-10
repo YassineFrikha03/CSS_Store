@@ -1,0 +1,33 @@
+# ========================
+# DÉPENDANCES NODE.JS
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================
+# VARIABLES D'ENVIRONNEMENT
+# ========================
+.env
+.env.local
+.env.*.local
+
+# ========================
+# BUILD DE PRODUCTION
+# ========================
+dist/
+build/
+
+# ========================
+# FICHIERS SYSTÈME
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# LOGS ET CACHE VITE
+# ========================
+logs/
+*.log
+.vite/
