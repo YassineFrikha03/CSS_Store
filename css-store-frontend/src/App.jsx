@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext";
 
@@ -23,17 +23,20 @@ import RegisterPage from './pages/RegisterPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import LoginSuccess from './pages/LoginSuccess';
 import ProtectedRoute from "./components/ProtectedRoute";
+import ClientDashboard from "./pages/ClientDashboard";
 
 function AppContent() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <div className="bg-white min-h-screen text-black antialiased relative flex flex-col justify-between">
       {/* 🟢 Maintenant la Navbar est BIEN à l'intérieur du Provider (appelé dans App) */}
-      <Navbar onOpenAuth={() => setIsAuthOpen(true)} />
+      {!isAdmin && <Navbar onOpenAuth={() => setIsAuthOpen(true)} />}
 
       {/* Zone de routage dynamique */}
-      <main className="pt-[140px] flex-grow">
+      <main className={`${isAdmin ? '' : 'pt-[140px]'} flex-grow`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/textiles" element={<MaillotsPage />} />
@@ -47,15 +50,16 @@ function AppContent() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/login/success" element={<LoginSuccess />} />
+          <Route path="/profile" element={<ClientDashboard />} />
         </Routes>
       </main>
 
       {/* Tiroirs globaux */}
-      <CartSidebar />
+      {!isAdmin && <CartSidebar />}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
       {/* Le Footer unique global */}
-      <Footer />
+      {!isAdmin && <Footer />}
     </div>
   );
 }

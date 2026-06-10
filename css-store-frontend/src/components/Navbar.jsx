@@ -77,9 +77,9 @@ const Navbar = () => {
           {/* Authentification Supporter reliée à tes nouvelles pages */}
           {user ? (
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-mono font-bold uppercase text-zinc-600">
+              <Link to={user.role === 'admin' ? '/admin' : '/profile'} className="text-[10px] font-mono font-bold uppercase text-zinc-600 hover:text-black transition-colors cursor-pointer">
                 Supporter: {user.name.split(' ')[0]}
-              </span>
+              </Link>
               <button 
                 onClick={logoutUser} 
                 className="text-[9px] uppercase border border-zinc-300 px-2.5 py-1 hover:border-black font-bold transition-colors text-black cursor-pointer bg-white"

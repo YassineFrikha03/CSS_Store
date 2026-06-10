@@ -11,6 +11,8 @@ const ProductSchema = new mongoose.Schema({
     required: true,
     enum: ['Matchwear', 'Streetwear', 'Accessoires', 'Collector'] 
   },
+  sizes: [{ type: String }],
+  reference: { type: String, default: '' },
   isFeatured: { type: Boolean, default: false },
   stock: { type: Number, default: 0 }
 }, { timestamps: true });

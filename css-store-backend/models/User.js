@@ -38,6 +38,16 @@ const UserSchema = new mongoose.Schema({
     country: { type: String, default: 'Tunisia' }
   },
 
+  // Authentification Biométrique (FaceID)
+  hasFaceId: {
+    type: Boolean,
+    default: false
+  },
+  faceDescriptor: {
+    type: [Number],
+    default: []
+  },
+
   resetPasswordToken: String,
   resetPasswordExpires: Date,
   

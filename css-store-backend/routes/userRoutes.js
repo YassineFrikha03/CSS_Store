@@ -64,6 +64,16 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: "Identifiants invalides." });
     }
 
+    // VÉRIFICATION FACEID
+    if (user.hasFaceId) {
+      // Si l'utilisateur a configuré FaceID, on ne le connecte pas tout de suite
+      return res.status(200).json({
+        requireFaceId: true,
+        userId: user._id,
+        message: "Scan facial requis pour terminer la connexion."
+      });
+    }
+
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET || 'votre_cle_secrete_css',
@@ -91,7 +101,7 @@ router.post('/login', async (req, res) => {
 // =========================================================================
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, phoneNumber, shippingAddress } = req.body;
+    const { name, email, password, phoneNumber, shippingAddress, hasFaceId, faceDescriptor } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: "L'adresse e-mail et le mot de passe sont obligatoires." });
@@ -111,6 +121,8 @@ router.post('/register', async (req, res) => {
       password: hashedPassword,
       phoneNumber,
       shippingAddress,
+      hasFaceId: hasFaceId || false,
+      faceDescriptor: faceDescriptor || [],
       role: 'supporter'
     });
 
@@ -120,6 +132,57 @@ router.post('/register', async (req, res) => {
   } catch (error) {
     console.error("❌ Erreur lors de l'inscription :", error);
     return res.status(500).json({ message: "Une erreur interne est survenue lors de l'inscription." });
+  }
+});
+
+// =========================================================================
+// 📸 3.5 ENDPOINT : VÉRIFICATION FACEID (POST /api/users/verify-face)
+// =========================================================================
+router.post('/verify-face', async (req, res) => {
+  try {
+    const { userId, faceDescriptor } = req.body;
+
+    if (!userId || !faceDescriptor || faceDescriptor.length === 0) {
+      return res.status(400).json({ message: "Données biométriques manquantes." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user || !user.hasFaceId || !user.faceDescriptor || user.faceDescriptor.length === 0) {
+      return res.status(400).json({ message: "Cet utilisateur n'a pas configuré FaceID." });
+    }
+
+    // Calcul de la distance Euclidienne entre les deux descripteurs (tableaux de nombres)
+    let distance = 0;
+    for (let i = 0; i < user.faceDescriptor.length; i++) {
+      distance += Math.pow(user.faceDescriptor[i] - faceDescriptor[i], 2);
+    }
+    distance = Math.sqrt(distance);
+
+    // Un seuil typique pour face-api.js est 0.6. Si distance < 0.6, c'est la même personne.
+    if (distance > 0.6) {
+      return res.status(401).json({ message: "Reconnaissance faciale échouée. Visage non reconnu." });
+    }
+
+    // Visage reconnu : on connecte l'utilisateur
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET || 'votre_cle_secrete_css',
+      { expiresIn: '7d' }
+    );
+
+    return res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+  } catch (error) {
+    console.error("❌ Erreur lors de la vérification FaceID :", error);
+    return res.status(500).json({ message: "Erreur serveur lors de l'analyse biométrique." });
   }
 });
 
@@ -274,5 +337,49 @@ router.get('/auth/facebook/callback',
     res.redirect(`http://localhost:5173/login/success?token=${token}`);
   }
 );
+
+// =========================================================================
+// 👥 8. ENDPOINT : RECUPERER TOUS LES UTILISATEURS (GET /api/users)
+// =========================================================================
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des utilisateurs", error: error.message });
+  }
+});
+
+// =========================================================================
+// 🔄 9. ENDPOINT : MODIFIER LE ROLE (PUT /api/users/:id/role)
+// =========================================================================
+router.put('/:id/role', async (req, res) => {
+  try {
+    const { role } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id, 
+      { role }, 
+      { new: true, runValidators: true }
+    ).select('-password');
+    
+    if (!updatedUser) return res.status(404).json({ message: "Utilisateur introuvable" });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la modification du rôle", error: error.message });
+  }
+});
+
+// =========================================================================
+// ❌ 10. ENDPOINT : SUPPRIMER UN UTILISATEUR (DELETE /api/users/:id)
+// =========================================================================
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) return res.status(404).json({ message: "Utilisateur introuvable" });
+    res.status(200).json({ message: "Compte utilisateur supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de l'utilisateur", error: error.message });
+  }
+});
 
 module.exports = router;

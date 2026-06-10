@@ -26,17 +26,12 @@ router.get('/id/:id', async (req, res) => {
 });
 
 // @route   GET /api/orders/user/:userId
-// @desc    Récupérer l'historique complet des commandes d'un supporter spécifique
-router.get('/', async (req, res) => {
+router.get('/user/:userId', async (req, res) => {
   try {
-    // ⚡ Le .populate('user', 'name') va chercher le 'name' dans la collection Users grâce à l'ID
-    const orders = await Order.find({})
-      .populate('user', 'name') 
-      .sort({ createdAt: -1 });
-      
-    res.status(200).json(orders);
+    const orders = await Order.find({ user: req.params.userId }).populate('user', 'name').sort({ createdAt: -1 });
+    return res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération des commandes", error: error.message });
+    return res.status(500).json({ message: "Erreur", error: error.message });
   }
 });
 
@@ -71,4 +66,19 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la mise à jour de la commande", error: error.message });
   }
 });
+
+// @route   DELETE /api/orders/:id
+// @desc    Supprimer une commande définitivement (Vue Admin)
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Commande introuvable" });
+    }
+    res.status(200).json({ message: "Commande supprimée avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de la commande", error: error.message });
+  }
+});
+
 module.exports = router;
