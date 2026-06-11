@@ -77,7 +77,7 @@ const CartSidebar = () => {
                           <Plus size={12} strokeWidth={3} />
                         </button>
                       </div>
-                      <span className="font-black text-sm">{item.price * item.quantity} TND</span>
+                      <span className="font-black text-sm">{(item.price * item.quantity).toFixed(3)} TND</span>
                     </div>
                   </div>
                   
@@ -97,7 +97,7 @@ const CartSidebar = () => {
             <div className="p-6 border-t border-zinc-100 bg-white">
               <div className="flex justify-between items-end mb-4">
                 <span className="text-zinc-500 text-xs uppercase tracking-widest font-bold">Total</span>
-                <span className="text-2xl font-black text-black">{getTotalPrice()} TND</span>
+                <span className="text-2xl font-black text-black">{getTotalPrice().toFixed(3)} TND</span>
               </div>
               <p className="text-[10px] text-zinc-500 font-medium mb-5 text-center px-4">
                 Taxes incluses. Les frais de livraison sont calculés à la prochaine étape.

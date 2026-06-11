@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useFavorites } from '../context/FavoritesContext';
 
 const ProductCard = ({ product, addToCart }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const favorite = isFavorite(product._id);
+
+  const toggleFavorite = (e) => {
+    e.preventDefault(); // Prevent Link click if it's inside a link
+    e.stopPropagation(); // Prevent propagation
+    if (favorite) {
+      removeFavorite(product._id);
+    } else {
+      addFavorite(product._id);
+    }
+  };
 
   // 🟢 CORRIGÉ : Syntaxe JavaScript nettoyée pour éviter le crash et supprimer via.placeholder
   const productImage = product.image || (product.images && product.images[0]) || '';
@@ -18,14 +31,14 @@ const ProductCard = ({ product, addToCart }) => {
 
       {/* ❤️ Icône de Favoris (Bouton interactif) */}
       <button 
-        onClick={() => setIsFavorite(!isFavorite)}
+        onClick={toggleFavorite}
         className="absolute top-3 right-3 z-10 w-7 h-7 bg-white rounded-full border border-zinc-200 flex items-center justify-center text-zinc-400 hover:text-red-500 hover:scale-110 transition-all shadow-sm cursor-pointer"
       >
-        {isFavorite ? '❤️' : '🤍'}
+        {favorite ? '❤️' : '🤍'}
       </button>
       
       {/* 🖼️ Zone de l'image sur fond gris clair (Parfaitement centrée) */}
-      <div className="h-64 w-full bg-[#F6F6F6] flex items-center justify-center p-6 relative overflow-hidden">
+      <Link to={`/products/id/${product._id}`} className="h-64 w-full bg-[#F6F6F6] flex items-center justify-center p-6 relative overflow-hidden block cursor-pointer">
         {productImage ? (
           <img 
             src={productImage} 
@@ -35,15 +48,15 @@ const ProductCard = ({ product, addToCart }) => {
         ) : (
           <div className="text-zinc-300 font-black tracking-widest text-xs font-mono">CSS STORE</div>
         )}
-      </div>
+      </Link>
       
       {/* 📝 Contenu : Infos, Notation et Prix */}
       <div className="p-4 flex-grow flex flex-col justify-between bg-white text-left">
         <div>
           {/* Nom du produit */}
-          <h3 className="font-medium text-xs md:text-sm text-zinc-700 tracking-tight line-clamp-1 group-hover:text-black transition-colors">
+          <Link to={`/products/id/${product._id}`} className="font-medium text-xs md:text-sm text-zinc-700 tracking-tight line-clamp-1 group-hover:text-black transition-colors block cursor-pointer">
             {product.name}
-          </h3>
+          </Link>
           
           {/* Prix au format officiel DT */}
           <span className="block font-sans text-sm font-black text-black mt-1">

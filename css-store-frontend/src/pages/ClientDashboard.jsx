@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
+import { useFavorites } from '../context/FavoritesContext';
 import { useNavigate } from 'react-router-dom';
-import { Package, ShoppingBag, Bell, User as UserIcon, LogOut, ChevronRight } from 'lucide-react';
+import { Package, ShoppingBag, Bell, User as UserIcon, LogOut, ChevronRight, Heart } from 'lucide-react';
 
 const ClientDashboard = () => {
   const { user, logoutUser } = useUser();
+  const { favorites, loadingFavorites } = useFavorites();
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('COMMANDES');
 
   useEffect(() => {
     if (!user) {
@@ -60,12 +63,25 @@ const ClientDashboard = () => {
           </div>
 
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-zinc-200 flex flex-col gap-2">
-            <button className="flex items-center justify-between p-3 rounded-xl bg-black text-white font-medium text-sm transition-colors">
-              <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setActiveTab('COMMANDES')}
+              className={`flex items-center justify-between p-3 rounded-xl transition-colors cursor-pointer ${activeTab === 'COMMANDES' ? 'bg-black text-white' : 'hover:bg-zinc-50 text-zinc-600'}`}
+            >
+              <div className="flex items-center gap-3 font-medium text-sm">
                 <ShoppingBag size={18} />
                 Mes Commandes
               </div>
-              <ChevronRight size={16} />
+              {activeTab === 'COMMANDES' && <ChevronRight size={16} />}
+            </button>
+            <button 
+              onClick={() => setActiveTab('FAVORIS')}
+              className={`flex items-center justify-between p-3 rounded-xl transition-colors cursor-pointer ${activeTab === 'FAVORIS' ? 'bg-black text-white' : 'hover:bg-zinc-50 text-zinc-600'}`}
+            >
+              <div className="flex items-center gap-3 font-medium text-sm">
+                <Heart size={18} />
+                Mes Favoris
+              </div>
+              {activeTab === 'FAVORIS' && <ChevronRight size={16} />}
             </button>
             <button className="flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 text-zinc-600 font-medium text-sm transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
@@ -91,9 +107,9 @@ const ClientDashboard = () => {
         {/* CONTENU PRINCIPAL */}
         <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col gap-8">
           
-          {/* SECTION COMMANDES */}
-          <div>
-            <h3 className="text-2xl font-black uppercase tracking-wider text-black mb-6">Historique d'Achats</h3>
+          {activeTab === 'COMMANDES' ? (
+            <div>
+              <h3 className="text-2xl font-black uppercase tracking-wider text-black mb-6">Historique d'Achats</h3>
             
             {loading ? (
               <p className="text-zinc-500">Chargement de vos commandes...</p>
@@ -102,7 +118,7 @@ const ClientDashboard = () => {
                 <Package size={48} className="text-zinc-300 mb-4" />
                 <h4 className="text-lg font-bold text-black mb-2">Aucune commande</h4>
                 <p className="text-sm text-zinc-500">Vous n'avez pas encore passé de commande sur notre boutique.</p>
-                <button onClick={() => navigate('/boutique')} className="mt-6 bg-black text-white px-6 py-3 font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-zinc-800 transition-colors">
+                <button onClick={() => navigate('/textiles')} className="mt-6 bg-black text-white px-6 py-3 font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-zinc-800 transition-colors">
                   Découvrir la boutique
                 </button>
               </div>
@@ -136,7 +152,51 @@ const ClientDashboard = () => {
                 ))}
               </div>
             )}
-          </div>
+            </div>
+          ) : (
+            <div>
+              <h3 className="text-2xl font-black uppercase tracking-wider text-black mb-6">Ma Liste d'Envies</h3>
+              
+              {loadingFavorites ? (
+                <p className="text-zinc-500">Chargement de vos favoris...</p>
+              ) : favorites.length === 0 ? (
+                <div className="bg-white rounded-2xl p-8 shadow-sm border border-zinc-200 text-center flex flex-col items-center">
+                  <Heart size={48} className="text-zinc-300 mb-4" />
+                  <h4 className="text-lg font-bold text-black mb-2">Aucun favori</h4>
+                  <p className="text-sm text-zinc-500">Vous n'avez pas encore ajouté de produit à votre liste d'envies.</p>
+                  <button onClick={() => navigate('/textiles')} className="mt-6 bg-black text-white px-6 py-3 font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-zinc-800 transition-colors">
+                    Explorer la boutique
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {favorites.map((product) => (
+                    <div key={product._id} className="bg-white rounded-2xl p-4 shadow-sm border border-zinc-200 flex flex-col hover:border-black transition-colors relative group">
+                      <div className="aspect-[4/5] bg-zinc-50 rounded-xl overflow-hidden mb-4 relative flex items-center justify-center">
+                        {product.imageUrl ? (
+                          <img 
+                            src={product.imageUrl} 
+                            alt={product.name} 
+                            className="w-full h-full object-cover mix-blend-darken group-hover:scale-105 transition-transform duration-500" 
+                          />
+                        ) : (
+                          <div className="text-zinc-300 font-black tracking-widest text-[10px] font-mono">CSS STORE</div>
+                        )}
+                      </div>
+                      <h4 className="font-bold text-sm uppercase text-black line-clamp-1">{product.name}</h4>
+                      <p className="text-red-600 font-black text-sm mt-1">{product.price} TND</p>
+                      <button 
+                        onClick={() => navigate(`/products/id/${product._id}`)}
+                        className="mt-4 w-full bg-zinc-100 text-black py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-black hover:text-white transition-colors cursor-pointer"
+                      >
+                        Voir produit
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* SECTION ACTUALITÉS */}
           <div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeroSlider from '../components/HeroSlider';
 import CategoryCircles from '../components/CategoryCircles';
 import ProductGrid from '../components/ProductGrid';
@@ -8,6 +9,7 @@ import ReviewsSection from '../components/ReviewsSection';
 import Footer from '../components/Footer';
 
 const HomePage = ({ currentCategory }) => {
+  const navigate = useNavigate();
   return (
     <div className="w-full bg-[#F9F9F9]">
       {/* 1. Grand Banner Hero avec les joueurs du CSS et le blason de 1928 */}
@@ -20,7 +22,7 @@ const HomePage = ({ currentCategory }) => {
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
         <div className="flex justify-between items-center mb-8 border-b border-zinc-200 pb-4">
           <h2 className="text-xl font-black uppercase tracking-wider text-black">Produits Populaires</h2>
-          <button className="text-xs font-bold uppercase tracking-wider text-zinc-600 hover:text-black flex items-center gap-1 cursor-pointer">
+          <button onClick={() => navigate('/textiles')} className="text-xs font-bold uppercase tracking-wider text-zinc-600 hover:text-black flex items-center gap-1 cursor-pointer">
             Voir Tout &rarr;
           </button>
         </div>

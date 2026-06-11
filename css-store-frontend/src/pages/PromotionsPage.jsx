@@ -12,7 +12,7 @@ const PromotionsPage = () => {
       subtitle: "OFFRE VALABLE JUSQU'AU 22 JUIN",
       tag: "-20%",
       image: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600",
-      targetPath: "/maillots",
+      targetPath: "/textiles",
       gridSpan: "md:col-span-2 h-80"
     },
     {

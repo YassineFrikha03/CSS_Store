@@ -1,14 +1,39 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from './UserContext';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { user } = useUser();
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // 🔄 Charger le panier spécifique à l'utilisateur connecté
+  useEffect(() => {
+    if (user && user.id) {
+      const savedCart = localStorage.getItem(`css_cart_${user.id}`);
+      if (savedCart) {
+        setCartItems(JSON.parse(savedCart));
+      } else {
+        setCartItems([]);
+      }
+    } else {
+      // 🚨 Si aucun compte connecté, le panier doit être vide !
+      setCartItems([]);
+    }
+  }, [user]);
+
+  // 💾 Sauvegarder automatiquement le panier de l'utilisateur à chaque modification
+  useEffect(() => {
+    if (user && user.id) {
+      // On ne sauvegarde que si l'utilisateur est connecté, pour ne pas écraser avec un panier vide lors du logout
+      localStorage.setItem(`css_cart_${user.id}`, JSON.stringify(cartItems));
+    }
+  }, [cartItems, user]);
+
   // Ajouter un maillot ou article au panier
-  const addToCart = (product, size = 'M') => {
+  const addToCart = (product, size = 'M', quantityToAdd = 1) => {
     setCartItems((prevItems) => {
       // On cherche si l'article avec la MÊME taille est déjà dans le panier
       const existingItemIndex = prevItems.findIndex(
@@ -18,12 +43,12 @@ export const CartProvider = ({ children }) => {
       if (existingItemIndex > -1) {
         // Si oui, on incrémente juste sa quantité
         const newItems = [...prevItems];
-        newItems[existingItemIndex].quantity += 1;
+        newItems[existingItemIndex].quantity += quantityToAdd;
         return newItems;
       }
 
       // Si non, on l'ajoute comme nouvel élément
-      return [...prevItems, { ...product, quantity: 1, selectedSize: size }];
+      return [...prevItems, { ...product, quantity: quantityToAdd, selectedSize: size }];
     });
     
     // Effet moderne : on ouvre automatiquement la sidebar du panier lors d'un achat
@@ -46,6 +71,9 @@ export const CartProvider = ({ children }) => {
   // Vider complètement le panier
   const clearCart = () => {
     setCartItems([]);
+    if (user && user.id) {
+      localStorage.removeItem(`css_cart_${user.id}`);
+    }
   };
 
   // Calcul du prix total de la commande

@@ -7,6 +7,8 @@ import AdminOrders from '../components/admin/AdminOrders';
 import AdminOverview from '../components/admin/AdminOverview';
 import AdminUsers from '../components/admin/AdminUsers';
 import AdminLogs from '../components/admin/AdminLogs';
+import AdminReviews from '../components/admin/AdminReviews';
+import { Star } from 'lucide-react';
 import Logo from '../assets/logocss.png';
 
 const AdminDashboard = () => {
@@ -19,6 +21,7 @@ const AdminDashboard = () => {
     { id: 'stock', label: 'Produits', icon: <Package size={18} /> },
     { id: 'orders', label: 'Commandes', icon: <ShoppingCart size={18} /> },
     { id: 'users', label: 'Clients', icon: <Users size={18} /> },
+    { id: 'reviews', label: 'Avis en attente', icon: <Star size={18} /> },
     { id: 'logs', label: 'Notifications', icon: <Bell size={18} /> },
     { id: 'settings', label: 'Paramètres', icon: <Settings size={18} /> },
   ];
@@ -118,6 +121,7 @@ const AdminDashboard = () => {
             {activeTab === 'stock' && <AdminStock />}
             {activeTab === 'orders' && <AdminOrders />}
             {activeTab === 'users' && <AdminUsers />}
+            {activeTab === 'reviews' && <AdminReviews />}
             {activeTab === 'logs' && <AdminLogs />}
             {activeTab === 'settings' && (
               <div className="bg-white p-8 rounded-lg border border-zinc-200 text-center">

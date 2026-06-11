@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 import { Toaster } from "react-hot-toast";
 
 // Importation des composants globaux
@@ -91,10 +92,12 @@ function App() {
   return (
     <Router>
       <UserProvider>
-        <CartProvider>
-          {/* AppContent hérite maintenant de TOUS les contextes sans exception */}
-          <AppContent />
-        </CartProvider>
+        <FavoritesProvider>
+          <CartProvider>
+            {/* AppContent hérite maintenant de TOUS les contextes sans exception */}
+            <AppContent />
+          </CartProvider>
+        </FavoritesProvider>
       </UserProvider>
     </Router>
   );

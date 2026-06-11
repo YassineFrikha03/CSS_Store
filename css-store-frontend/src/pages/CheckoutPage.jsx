@@ -199,7 +199,7 @@ const CheckoutPage = () => {
               <div className="border-t border-zinc-100 pt-6 space-y-3 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Sous-total</span>
-                  <span className="font-bold">{subtotal} TND</span>
+                  <span className="font-bold">{subtotal.toFixed(3)} TND</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-zinc-500">Livraison (Standard)</span>
@@ -209,7 +209,7 @@ const CheckoutPage = () => {
 
               <div className="border-t border-black pt-6 mb-8 flex justify-between items-end">
                 <span className="text-sm font-black uppercase tracking-widest">Total</span>
-                <span className="text-2xl font-black">{total} <span className="text-sm">TND</span></span>
+                <span className="text-2xl font-black">{total.toFixed(3)} <span className="text-sm">TND</span></span>
               </div>
 
               <button 

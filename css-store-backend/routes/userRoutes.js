@@ -397,7 +397,63 @@ router.get('/auth/facebook/callback',
 );
 
 // =========================================================================
-// 👥 8. ENDPOINT : RECUPERER TOUS LES UTILISATEURS (GET /api/users)
+// ❤️ 8. ENDPOINTS FAVORIS : GESTION DE LA WISHLIST (GET, POST, DELETE)
+// =========================================================================
+
+// Récupérer les favoris du supporter connecté
+router.get('/favorites', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).populate('wishlist');
+    if (!user) return res.status(401).json({ message: "Utilisateur introuvable." });
+    
+    res.status(200).json(user.wishlist);
+  } catch (error) {
+    console.error("❌ Erreur GET /favorites :", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des favoris." });
+  }
+});
+
+// Ajouter un produit aux favoris
+router.post('/favorites/:productId', authMiddleware, async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const user = await User.findById(req.user.id);
+    
+    if (!user) return res.status(404).json({ message: "Utilisateur introuvable." });
+
+    // Vérifier si déjà en favoris (empêcher les doublons)
+    if (!user.wishlist.includes(productId)) {
+      user.wishlist.push(productId);
+      await user.save();
+    }
+    
+    res.status(200).json({ message: "Produit ajouté aux favoris.", wishlist: user.wishlist });
+  } catch (error) {
+    console.error("❌ Erreur POST /favorites :", error);
+    res.status(500).json({ message: "Erreur lors de l'ajout aux favoris." });
+  }
+});
+
+// Retirer un produit des favoris
+router.delete('/favorites/:productId', authMiddleware, async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const user = await User.findById(req.user.id);
+    
+    if (!user) return res.status(404).json({ message: "Utilisateur introuvable." });
+
+    user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+    await user.save();
+    
+    res.status(200).json({ message: "Produit retiré des favoris.", wishlist: user.wishlist });
+  } catch (error) {
+    console.error("❌ Erreur DELETE /favorites :", error);
+    res.status(500).json({ message: "Erreur lors du retrait des favoris." });
+  }
+});
+
+// =========================================================================
+// 👥 9. ENDPOINT : RECUPERER TOUS LES UTILISATEURS (GET /api/users)
 // =========================================================================
 router.get('/', async (req, res) => {
   try {
