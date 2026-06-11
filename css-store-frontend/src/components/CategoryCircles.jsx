@@ -44,10 +44,10 @@ const CategoryCircles = () => {
           <Link 
             key={index} 
             to={cat.path}
-            className="bg-[#FAFAFA] border border-zinc-100 p-6 flex flex-col items-center justify-center text-center group hover:shadow-md hover:border-zinc-200 transition-all duration-300 rounded-none cursor-pointer"
+            className="bg-[#FAFAFA] border border-zinc-100 p-6 flex flex-col items-center justify-center text-center group hover:shadow-xl hover:-translate-y-1 hover:border-zinc-200 transition-all duration-300 rounded-3xl cursor-pointer"
           >
             {/* Conteneur de la bulle d'image */}
-            <div className="w-24 h-24 overflow-hidden rounded-full bg-white flex items-center justify-center border border-zinc-200">
+            <div className="w-24 h-24 overflow-hidden rounded-full bg-white flex items-center justify-center border border-zinc-200 shadow-inner group-hover:shadow-md transition-shadow duration-300">
               <img 
                 src={cat.img} 
                 alt={cat.name} 

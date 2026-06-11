@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import imagelogin from '../assets/imagelogin.png';
 import Logo from '../assets/logocss.png';
 import FaceScanner from '../components/FaceScanner';
@@ -70,7 +71,7 @@ const RegisterPage = () => {
         faceDescriptor: faceDescriptor ? Array.from(faceDescriptor) : []
       });
 
-      alert('Votre compte CSS Store a été créé avec succès ! 🖤🤍');
+      toast.success('Votre compte CSS Store a été créé avec succès ! 🖤🤍');
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de la création du compte.");
@@ -133,8 +134,8 @@ const RegisterPage = () => {
         <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12">
           
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-black uppercase tracking-wider text-black font-sans">Créer un compte</h1>
-            <p className="text-xs text-zinc-400 font-medium mt-1.5">Rejoignez la famille du Club Sportif Sfaxien</p>
+            <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-wider text-black font-sans mb-3">Créer un compte</h1>
+            <p className="text-sm text-zinc-500 font-medium">Rejoignez la famille du Club Sportif Sfaxien</p>
           </div>
 
           {error && (
@@ -148,27 +149,27 @@ const RegisterPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Prénom</label>
-                <input 
-                  type="text" 
-                  value={firstName} 
-                  onChange={e => setFirstName(e.target.value)} 
-                  placeholder="Votre prénom" 
-                  required 
-                  autoComplete="given-name" 
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
-                />
+                  <input 
+                    type="text" 
+                    value={firstName} 
+                    onChange={e => setFirstName(e.target.value)} 
+                    placeholder="Votre prénom" 
+                    required 
+                    autoComplete="given-name" 
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                  />
               </div>
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Nom</label>
-                <input 
-                  type="text" 
-                  value={lastName} 
-                  onChange={e => setLastName(e.target.value)} 
-                  placeholder="Votre nom" 
-                  required 
-                  autoComplete="family-name" 
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
-                />
+                  <input 
+                    type="text" 
+                    value={lastName} 
+                    onChange={e => setLastName(e.target.value)} 
+                    placeholder="Votre nom" 
+                    required 
+                    autoComplete="family-name" 
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                  />
               </div>
             </div>
 
@@ -181,33 +182,33 @@ const RegisterPage = () => {
                 placeholder="Entrez votre e-mail" 
                 required 
                 autoComplete="email" 
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
+                className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Téléphone</label>
-                <input 
-                  type="tel" 
-                  value={phoneNumber} 
-                  onChange={e => setPhoneNumber(e.target.value)} 
-                  placeholder="+216 XX XXX XXX" 
-                  required 
-                  autoComplete="tel" 
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
-                />
+                  <input 
+                    type="tel" 
+                    value={phoneNumber} 
+                    onChange={e => setPhoneNumber(e.target.value)} 
+                    placeholder="+216 XX XXX XXX" 
+                    required 
+                    autoComplete="tel" 
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                  />
               </div>
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Ville (Tunisie)</label>
-                <input 
-                  type="text" 
-                  value={city} 
-                  onChange={e => setCity(e.target.value)} 
-                  placeholder="Ex: Sfax, Tunis, Sousse..." 
-                  required 
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
-                />
+                  <input 
+                    type="text" 
+                    value={city} 
+                    onChange={e => setCity(e.target.value)} 
+                    placeholder="Ex: Sfax, Tunis, Sousse..." 
+                    required 
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                  />
               </div>
             </div>
 
@@ -215,15 +216,15 @@ const RegisterPage = () => {
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Mot de passe</label>
                 <div className="relative">
-                  <input 
-                    type={showPassword ? 'text' : 'password'}
-                    value={password} 
-                    onChange={e => setPassword(e.target.value)} 
-                    placeholder="Créez un mot de passe" 
-                    required 
-                    autoComplete="new-password" 
-                    className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white pl-4 pr-11 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
-                  />
+                    <input 
+                      type={showPassword ? 'text' : 'password'}
+                      value={password} 
+                      onChange={e => setPassword(e.target.value)} 
+                      placeholder="Créez un mot de passe" 
+                      required 
+                      autoComplete="new-password" 
+                      className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white pl-5 pr-11 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                    />
                   <button
                     type="button"
                     onClick={() => setShowPassword(v => !v)}
@@ -238,15 +239,15 @@ const RegisterPage = () => {
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Confirmer le mot de passe</label>
                 <div className="relative">
-                  <input 
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={confirmPassword} 
-                    onChange={e => setConfirmPassword(e.target.value)} 
-                    placeholder="Confirmez votre mot de passe" 
-                    required 
-                    autoComplete="new-password" 
-                    className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white pl-4 pr-11 py-2.5 outline-none transition-all rounded-none font-medium text-black" 
-                  />
+                    <input 
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={confirmPassword} 
+                      onChange={e => setConfirmPassword(e.target.value)} 
+                      placeholder="Confirmez votre mot de passe" 
+                      required 
+                      autoComplete="new-password" 
+                      className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white pl-5 pr-11 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                    />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(v => !v)}
@@ -270,9 +271,9 @@ const RegisterPage = () => {
                     setEnableFaceId(e.target.checked);
                     if (!e.target.checked) setFaceDescriptor(null);
                   }}
-                  className="w-3.5 h-3.5 accent-black cursor-pointer"
+                  className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
                 />
-                <span className="text-[11px] font-bold text-black uppercase tracking-widest">Activer FaceID (Connexion Rapide)</span>
+                <span className="text-xs font-bold text-black uppercase tracking-widest">Activer FaceID (Connexion Rapide)</span>
               </label>
 
               {enableFaceId && (
@@ -294,9 +295,9 @@ const RegisterPage = () => {
                 id="terms" 
                 checked={agreeTerms} 
                 onChange={e => setAgreeTerms(e.target.checked)} 
-                className="w-4 h-4 accent-black border-zinc-300 mt-0.5 cursor-pointer" 
+                className="w-4 h-4 accent-black border-zinc-300 mt-0.5 cursor-pointer rounded" 
               />
-              <label htmlFor="terms" className="text-zinc-500 text-[11px] leading-snug cursor-pointer font-medium">
+              <label htmlFor="terms" className="text-zinc-500 text-xs leading-snug cursor-pointer font-medium">
                 J'accepte les <span className="text-black font-bold underline">Conditions Générales</span> et la <span className="text-black font-bold underline">Politique de Confidentialité</span> de la boutique officielle.
               </label>
             </div>
@@ -304,7 +305,7 @@ const RegisterPage = () => {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-colors cursor-pointer pt-4 rounded-none disabled:bg-zinc-400"
+              className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-all cursor-pointer rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:bg-zinc-400 mt-2"
             >
               {loading ? "Création du compte..." : "Créer mon compte"}
             </button>

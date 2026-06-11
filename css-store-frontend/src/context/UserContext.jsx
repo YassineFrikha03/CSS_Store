@@ -3,24 +3,19 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
-  // Recharger l'utilisateur si la session est sauvegardée dans le navigateur
-  useEffect(() => {
-    const savedUser = localStorage.getItem('css_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
+  const [user, setUser] = useState(() => {
+    const savedUser = sessionStorage.getItem('css_user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const loginUser = (userData) => {
     setUser(userData);
-    localStorage.setItem('css_user', JSON.stringify(userData));
+    sessionStorage.setItem('css_user', JSON.stringify(userData));
   };
 
   const logoutUser = () => {
     setUser(null);
-    localStorage.removeItem('css_user');
+    sessionStorage.removeItem('css_user');
   };
 
   return (

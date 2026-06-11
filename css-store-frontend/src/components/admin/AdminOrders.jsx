@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -23,19 +24,21 @@ const AdminOrders = () => {
   const handleUpdateStatus = async (id, status) => {
     try {
       await axios.put(`http://localhost:5000/api/orders/${id}`, { status });
-      fetchOrders(); 
+      setOrders(orders.map(o => (o._id === id ? { ...o, status } : o)));
+      toast.success("Statut mis à jour !");
     } catch (err) {
-      alert("Erreur lors du changement de statut");
+      toast.error("Erreur lors du changement de statut");
     }
   };
 
   const handleDeleteOrder = async (id) => {
-    if (window.confirm("Voulez-vous vraiment annuler/supprimer cette commande ?")) {
+    if (window.confirm("Supprimer cette commande définitivement ?")) {
       try {
         await axios.delete(`http://localhost:5000/api/orders/${id}`);
-        fetchOrders();
+        setOrders(orders.filter(o => o._id !== id));
+        toast.success("Commande supprimée !");
       } catch (err) {
-        alert("Erreur lors de la suppression de la commande");
+        toast.error("Erreur lors de la suppression de la commande");
       }
     }
   };

@@ -13,7 +13,7 @@ const LoginSuccess = () => {
 
     if (token) {
       // 1. Stockage immédiat du jeton d'authentification
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
 
       // 2. Appel au backend pour récupérer le profil du supporter avec son nouveau token
       axios.get('http://localhost:5000/api/users/me', {
@@ -23,17 +23,11 @@ const LoginSuccess = () => {
         const userPayload = res.data.user || res.data;
         
         // 3. Sauvegarde locale de la session et mise à jour du Contexte Global
-        localStorage.setItem('user', JSON.stringify(userPayload));
+        sessionStorage.setItem('user', JSON.stringify(userPayload));
         loginUser(userPayload);
 
-        // 4. Redirection selon le rôle du supporter
-        if (userPayload.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
-        // Petit rafraîchissement de sécurité pour synchroniser la Navbar et le Panier
-        window.location.reload();
+        // Rediriger tout le monde vers l'accueil
+        navigate('/');
       })
       .catch((err) => {
         console.error("❌ Erreur lors de la récupération du profil social :", err);

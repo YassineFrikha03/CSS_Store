@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import toast from 'react-hot-toast';
 import imagelogin from '../assets/imagelogin.png';
 import Logo from '../assets/logocss.png';
 import FaceScanner from '../components/FaceScanner';
@@ -22,7 +23,7 @@ const EyeOffIcon = () => (
 const LoginPage = () => {
   const navigate = useNavigate();
   const { loginUser } = useUser();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -42,7 +43,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
+      const res = await axios.post('http://localhost:5000/api/users/login', { identifier, password });
       
       // Si FaceID est requis
       if (res.data.requireFaceId) {
@@ -56,16 +57,12 @@ const LoginPage = () => {
       const tokenPayload = res.data.token;
 
       if (userPayload) {
-        if (tokenPayload) localStorage.setItem('token', tokenPayload);
-        localStorage.setItem('user', JSON.stringify(userPayload));
+        if (tokenPayload) sessionStorage.setItem('token', tokenPayload);
+        sessionStorage.setItem('user', JSON.stringify(userPayload));
         loginUser(userPayload);
 
-        if (userPayload.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/profile'); // Rediriger vers l'espace client
-          window.location.reload();
-        }
+        // Rediriger tout le monde vers l'accueil
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data?.message || "Identifiants invalides");
@@ -85,16 +82,12 @@ const LoginPage = () => {
       const tokenPayload = res.data.token;
 
       if (userPayload) {
-        if (tokenPayload) localStorage.setItem('token', tokenPayload);
-        localStorage.setItem('user', JSON.stringify(userPayload));
+        if (tokenPayload) sessionStorage.setItem('token', tokenPayload);
+        sessionStorage.setItem('user', JSON.stringify(userPayload));
         loginUser(userPayload);
 
-        if (userPayload.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/profile'); // Rediriger vers l'espace client
-          window.location.reload();
-        }
+        // Rediriger tout le monde vers l'accueil
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data?.message || "Échec de l'authentification faciale.");
@@ -109,16 +102,58 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
 
-    if (!email) {
-      alert("Veuillez saisir votre adresse e-mail dans le champ pour recevoir le lien de réinitialisation.");
-      return;
+    let targetIdentifier = identifier;
+    if (!targetIdentifier) {
+      const userInput = window.prompt("Veuillez saisir votre e-mail ou numéro de téléphone pour recevoir le lien de réinitialisation :");
+      if (!userInput) return; // Annulé par l'utilisateur
+      targetIdentifier = userInput;
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/users/forgot-password', { email });
-      alert(res.data.message || "Un e-mail de récupération vous a été envoyé ! 📩");
+      const res = await axios.post('http://localhost:5000/api/users/forgot-password', { identifier: targetIdentifier });
+      toast.success(res.data.message || "Un e-mail ou SMS de récupération vous a été envoyé ! 📩📱");
+      
+      // Simulation visuelle du SMS
+      if (res.data.simulatedSmsLink) {
+        toast.custom((t) => (
+          <div className={`${t.visible ? 'animate-in fade-in slide-in-from-top-4' : 'animate-out fade-out slide-out-to-top-4'} max-w-sm w-full bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl pointer-events-auto border border-zinc-100 p-5 flex flex-col gap-3 duration-300`}>
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+              <div className="flex items-center gap-2">
+                <div className="bg-[#25D366] w-6 h-6 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+                </div>
+                <span className="font-black uppercase tracking-wider text-[10px] text-zinc-500">Messages</span>
+              </div>
+              <span className="text-[10px] font-bold text-zinc-400">À l'instant</span>
+            </div>
+            
+            <div>
+              <h4 className="font-black text-sm uppercase tracking-tight text-black mb-1">Club Sportif Sfaxien</h4>
+              <p className="text-xs text-zinc-600 font-medium leading-relaxed">
+                Vous avez demandé la réinitialisation de votre mot de passe. Cliquez ci-dessous pour le changer.
+              </p>
+            </div>
+
+            <div className="flex gap-2 mt-2">
+              <a 
+                href={res.data.simulatedSmsLink} 
+                onClick={() => toast.dismiss(t.id)}
+                className="flex-1 bg-black text-white py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-zinc-800 transition-colors shadow-lg flex items-center justify-center"
+              >
+                Modifier
+              </a>
+              <button 
+                onClick={() => toast.dismiss(t.id)}
+                className="bg-zinc-100 text-zinc-500 hover:text-black hover:bg-zinc-200 py-3 px-4 rounded-xl text-[10px] font-black uppercase transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        ), { duration: 15000 }); // Affiché 15s pour avoir le temps de cliquer
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Erreur lors de l'envoi de l'e-mail de récupération.");
+      toast.error(err.response?.data?.message || "Erreur lors de l'envoi de l'e-mail de récupération.");
     }
   };
 
@@ -185,10 +220,10 @@ const LoginPage = () => {
         <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12">
           
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-black uppercase tracking-wider text-black font-sans">
+            <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-wider text-black font-sans mb-3">
               {step === 'login' ? 'Connexion' : 'Sécurité FaceID'}
             </h1>
-            <p className="text-xs text-zinc-400 font-medium mt-1.5">
+            <p className="text-sm text-zinc-500 font-medium">
               {step === 'login' ? 'Accédez à votre compte supporter' : 'Veuillez confirmer votre identité'}
             </p>
           </div>
@@ -203,15 +238,15 @@ const LoginPage = () => {
             <>
               <form onSubmit={handleSubmit} className="space-y-5 text-xs font-medium w-full">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-2">Adresse e-mail</label>
+                  <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-2">E-mail ou Numéro de téléphone</label>
                   <input 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Ex: supporter@css.tn" 
+                    type="text" 
+                    value={identifier} 
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="Ex: supporter@css.tn ou 216..." 
                     required 
-                    autoComplete="email"
-                    className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3.5 text-xs text-black outline-none transition-all rounded-none font-medium"
+                    autoComplete="username"
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium"
                   />
                 </div>
 
@@ -234,7 +269,7 @@ const LoginPage = () => {
                       placeholder="••••••••"
                       required
                       autoComplete="current-password"
-                      className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white pl-4 pr-11 py-3.5 text-xs text-black outline-none transition-all rounded-none font-medium"
+                      className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white pl-5 pr-11 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium"
                     />
                     <button
                       type="button"
@@ -248,15 +283,15 @@ const LoginPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-1">
-                  <input type="checkbox" id="remember" className="w-4 h-4 accent-black cursor-pointer border-zinc-300" />
-                  <label htmlFor="remember" className="text-zinc-500 text-[11px] cursor-pointer font-medium">Se souvenir de moi</label>
+                <div className="flex items-center gap-3 pt-2">
+                  <input type="checkbox" id="remember" className="w-4 h-4 accent-black cursor-pointer border-zinc-300 rounded" />
+                  <label htmlFor="remember" className="text-zinc-500 text-xs cursor-pointer font-medium">Se souvenir de moi</label>
                 </div>
 
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-colors cursor-pointer pt-4 rounded-none disabled:bg-zinc-400 border-none"
+                  className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer rounded-xl disabled:bg-zinc-400 border-none mt-2"
                 >
                   {loading ? "Vérification..." : "Se connecter"}
                 </button>
@@ -270,8 +305,22 @@ const LoginPage = () => {
               <div className="space-y-2.5 text-[11px] font-bold w-full">
                 <button 
                   type="button" 
+                  onClick={() => {
+                    setPendingUserId(null);
+                    setStep('face_scan');
+                  }}
+                  className="w-full border border-zinc-200 bg-white py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm hover:shadow-md cursor-pointer text-zinc-700 rounded-xl font-bold group"
+                >
+                  <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v2m10-4h4a2 2 0 012 2v2M4 16v2a2 2 0 002 2h4m10-4v2a2 2 0 01-2 2h-4m-4-6a3 3 0 100-6 3 3 0 000 6z"></path>
+                  </svg>
+                  <span>Connexion directe avec FaceID</span>
+                </button>
+
+                <button 
+                  type="button" 
                   onClick={handleGoogleLogin}
-                  className="w-full border border-zinc-200 bg-white py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-zinc-50 hover:border-zinc-300 transition-all cursor-pointer text-zinc-700 rounded-none font-bold group"
+                  className="w-full border border-zinc-200 bg-white py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm hover:shadow-md cursor-pointer text-zinc-700 rounded-xl font-bold group"
                 >
                   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -286,7 +335,7 @@ const LoginPage = () => {
                   <button 
                     type="button" 
                     disabled
-                    className="w-full border border-zinc-100 bg-zinc-50 py-3.5 px-4 flex items-center justify-center gap-3 text-zinc-300 rounded-none font-bold cursor-not-allowed select-none"
+                    className="w-full border border-zinc-100 bg-zinc-50 py-3.5 px-4 flex items-center justify-center gap-3 text-zinc-300 rounded-xl font-bold cursor-not-allowed select-none"
                   >
                     <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#d4d4d8"/>

@@ -9,10 +9,10 @@ const ProductCard = ({ product, addToCart }) => {
   const productImage = product.image || (product.images && product.images[0]) || '';
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-sm overflow-hidden flex flex-col justify-between h-full relative font-sans group hover:shadow-lg transition-all duration-300">
+    <div className="bg-white border border-zinc-100 rounded-2xl overflow-hidden flex flex-col justify-between h-full relative font-sans group hover:shadow-xl hover:-translate-y-1 hover:border-zinc-200 transition-all duration-300">
       
       {/* 🏷️ Badge "NOUVEAU" ou "BEST SELLER" selon la catégorie */}
-      <span className="absolute top-3 left-3 bg-black text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 z-10">
+      <span className="absolute top-3 left-3 bg-black text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full z-10 shadow-sm">
         {product.category === 'Accessoires' ? 'BEST SELLER' : 'NOUVEAU'}
       </span>
 
@@ -60,7 +60,7 @@ const ProductCard = ({ product, addToCart }) => {
         {/* 🛒 Bouton Ajouter au Panier Noir Massif */}
         <button 
           onClick={() => addToCart(product, 'M')}
-          className="w-full mt-4 bg-black text-white hover:bg-zinc-800 font-bold py-3 text-[9px] tracking-widest transition-all duration-300 uppercase flex items-center justify-center gap-2 cursor-pointer rounded-none border-none"
+          className="w-full mt-4 bg-black text-white hover:bg-zinc-800 font-bold py-3.5 text-[9px] tracking-widest transition-all duration-300 uppercase flex items-center justify-center gap-2 cursor-pointer rounded-xl border-none shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
           <span>🛒</span> AJOUTER AU PANIER
         </button>

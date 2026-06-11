@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -41,9 +42,9 @@ const ProductDetails = () => {
         quantity,
         size: product.category?.toLowerCase().includes('accessoire') ? 'Unique' : selectedSize
       });
-      alert("Produit ajouté au panier ! 🖤🤍");
+      toast.success("Produit ajouté au panier ! 🖤🤍");
     } catch (err) {
-      alert("Veuillez vous connecter pour gérer votre panier.");
+      toast.error("Veuillez vous connecter pour gérer votre panier.");
     }
   };
 
@@ -60,8 +61,8 @@ const ProductDetails = () => {
               <button 
                 key={idx}
                 onClick={() => setActiveImg(img || '')}
-                className={`w-14 h-14 border p-1 bg-zinc-50 overflow-hidden cursor-pointer transition-all ${
-                  activeImg === img ? 'border-black' : 'border-zinc-200'
+                className={`w-16 h-16 border-2 p-1.5 bg-zinc-50/50 rounded-xl overflow-hidden cursor-pointer transition-all ${
+                  activeImg === img ? 'border-black shadow-md' : 'border-transparent hover:border-zinc-300'
                 }`}
               >
                 {img ? (
@@ -73,7 +74,7 @@ const ProductDetails = () => {
             ))}
           </div>
           
-          <div className="flex-1 bg-zinc-50 border border-zinc-100 p-8 flex items-center justify-center min-h-[450px]">
+          <div className="flex-1 bg-zinc-50/50 border border-zinc-100 rounded-3xl p-8 flex items-center justify-center min-h-[450px]">
             {activeImg ? (
               <img src={activeImg} alt={product.name} className="max-h-[400px] object-contain mix-blend-darken" />
             ) : (
@@ -84,8 +85,8 @@ const ProductDetails = () => {
 
         {/* DETAILS ET CONFIGURATION PRODUIT */}
         <div className="space-y-6">
-          <div className="inline-block bg-blue-600 text-white text-[10px] font-black px-2 py-0.5 uppercase tracking-wider">
-            -20%
+          <div className="inline-block bg-black text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+            -20% PROMO
           </div>
           
           <h1 className="text-2xl md:text-3xl font-black uppercase text-zinc-900 tracking-tight">
@@ -114,10 +115,10 @@ const ProductDetails = () => {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`w-10 h-8 text-[11px] font-bold border transition-all cursor-pointer ${
+                    className={`w-10 h-10 text-[11px] font-bold border rounded-xl transition-all cursor-pointer ${
                       selectedSize === size 
-                        ? 'bg-blue-600 border-blue-600 text-white' 
-                        : 'border-zinc-200 text-zinc-800 hover:border-black'
+                        ? 'bg-black border-black text-white shadow-md' 
+                        : 'border-zinc-200 text-zinc-800 hover:border-black hover:bg-zinc-50'
                     }`}
                   >
                     {size}
@@ -130,17 +131,17 @@ const ProductDetails = () => {
           {/* AJOUT AU PANIER ET QUANTITÉS */}
           <div className="space-y-3 pt-4">
             <div className="flex gap-4">
-              <div className="flex items-center border border-zinc-200 bg-white">
+              <div className="flex items-center border border-zinc-200 bg-zinc-50/50 rounded-xl overflow-hidden">
                 <button 
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="px-3 py-2 text-zinc-500 hover:text-black font-bold cursor-pointer"
+                  className="px-4 py-3.5 text-zinc-500 hover:text-black hover:bg-zinc-100 font-bold cursor-pointer transition-colors"
                 >
                   -
                 </button>
-                <span className="px-4 font-mono font-bold text-xs">{quantity}</span>
+                <span className="px-4 font-mono font-bold text-sm w-12 text-center">{quantity}</span>
                 <button 
                   onClick={() => setQuantity(q => q + 1)}
-                  className="px-3 py-2 text-zinc-500 hover:text-black font-bold cursor-pointer"
+                  className="px-4 py-3.5 text-zinc-500 hover:text-black hover:bg-zinc-100 font-bold cursor-pointer transition-colors"
                 >
                   +
                 </button>
@@ -148,15 +149,15 @@ const ProductDetails = () => {
 
               <button 
                 onClick={handleAddToCart}
-                className="flex-1 bg-zinc-900 text-white py-3 px-6 text-xs font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 bg-black text-white py-3.5 px-6 text-xs font-black uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer border-none"
               >
-                🛒 Ajouter au panier
+                <span>🛒</span> Ajouter au panier
               </button>
             </div>
 
             <button 
               onClick={() => { handleAddToCart(); navigate('/cart'); }}
-              className="w-full bg-red-600 text-white py-3 text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-colors cursor-pointer"
+              className="w-full bg-red-600 text-white py-3.5 text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 rounded-xl cursor-pointer border-none"
             >
               Achat Rapide
             </button>
@@ -180,7 +181,7 @@ const ProductDetails = () => {
 
         <div>
           <h3 className="text-lg font-black uppercase tracking-wider mb-4">Informations Complémentaires</h3>
-          <div className="border border-zinc-200 p-6 inline-block bg-zinc-50 font-mono font-black tracking-widest text-lg text-zinc-800">
+          <div className="border border-zinc-200 p-6 inline-block bg-white rounded-2xl shadow-sm font-mono font-black tracking-widest text-lg text-zinc-800">
             hummel
           </div>
           <div className="mt-4 font-mono text-[11px] text-zinc-500">

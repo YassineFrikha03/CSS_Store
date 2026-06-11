@@ -31,7 +31,7 @@ const HeroSlider = () => {
           <p className="mt-4 text-sm md:text-md tracking-[0.2em] text-zinc-300 font-bold uppercase font-mono">
             PLUS QU'UN CLUB, UNE LÉGENDE
           </p>
-          <button className="mt-8 bg-white text-black hover:bg-zinc-200 font-bold text-xs tracking-widest py-3.5 px-8 uppercase flex items-center justify-center gap-2 transition-all duration-300 shadow-xl cursor-pointer w-full sm:w-auto">
+          <button className="mt-8 bg-white text-black hover:bg-zinc-200 font-bold text-xs tracking-widest py-4 px-8 uppercase flex items-center justify-center gap-3 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 cursor-pointer w-full sm:w-auto rounded-full border-none">
             Découvrir la collection <span className="text-sm">&rarr;</span>
           </button>
           
@@ -48,7 +48,7 @@ const HeroSlider = () => {
           <img 
             src={Logo} 
             alt="Blason CSS" 
-            className="w-36 h-36 md:w-44 md:h-44 object-contain mb-4 filter drop-shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+            className="w-36 h-36 md:w-44 md:h-44 object-contain mb-4 filter drop-shadow-[0_4px_12px_rgba(255,255,255,0.2)]"
           />
           <div className="h-[1.5px] w-12 bg-white/60 my-2"></div>
           <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-zinc-400 font-bold">SINCE</span>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext";
+import { Toaster } from "react-hot-toast";
 
 // Importation des composants globaux
 import Navbar from "./components/Navbar";
@@ -24,6 +25,8 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import LoginSuccess from './pages/LoginSuccess';
 import ProtectedRoute from "./components/ProtectedRoute";
 import ClientDashboard from "./pages/ClientDashboard";
+import CheckoutPage from "./pages/CheckoutPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 
 function AppContent() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -32,6 +35,24 @@ function AppContent() {
 
   return (
     <div className="bg-white min-h-screen text-black antialiased relative flex flex-col justify-between">
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+          style: {
+            borderRadius: '16px',
+            background: '#ffffff',
+            color: '#000000',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05)',
+            padding: '12px 20px',
+          },
+          success: { iconTheme: { primary: '#10b981', secondary: '#ffffff' } },
+          error: { iconTheme: { primary: '#ef4444', secondary: '#ffffff' } },
+        }}
+      />
+
       {/* 🟢 Maintenant la Navbar est BIEN à l'intérieur du Provider (appelé dans App) */}
       {!isAdmin && <Navbar onOpenAuth={() => setIsAuthOpen(true)} />}
 
@@ -51,6 +72,8 @@ function AppContent() {
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/login/success" element={<LoginSuccess />} />
           <Route path="/profile" element={<ClientDashboard />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-success" element={<OrderSuccessPage />} />
         </Routes>
       </main>
 

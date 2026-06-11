@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const AuthModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
   // États de basculement et de formulaire
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -31,7 +32,7 @@ const AuthModal = ({ isOpen, onClose }) => {
         // =========================================================================
         await axios.post('http://localhost:5000/api/users/register', {
           name,
-          email,
+          email: identifier,
           password,
           phoneNumber,
           shippingAddress: {
@@ -42,12 +43,12 @@ const AuthModal = ({ isOpen, onClose }) => {
         
         setIsRegister(false);
         setError('');
-        alert("Compte créé avec succès ! Vous pouvez maintenant vous connecter. 🖤🤍");
+        toast.success("Compte créé avec succès ! Vous pouvez maintenant vous connecter. 🖤🤍");
       } else {
         // =========================================================================
         // 🔓 REQUÊTE DE CONNEXION BACKEND
         // =========================================================================
-        const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
+        const res = await axios.post('http://localhost:5000/api/users/login', { identifier, password });
         
         // Extraction sécurisée des données selon la structure du payload backend
         const userPayload = res.data.user || res.data;
@@ -55,21 +56,16 @@ const AuthModal = ({ isOpen, onClose }) => {
 
         if (userPayload) {
           // 💾 persistence de la session dans le navigateur
-          if (tokenPayload) localStorage.setItem('token', tokenPayload);
-          localStorage.setItem('user', JSON.stringify(userPayload));
+          if (tokenPayload) sessionStorage.setItem('token', tokenPayload);
+          sessionStorage.setItem('user', JSON.stringify(userPayload));
 
           // ⚡ Synchronisation globale de l'état de l'utilisateur
           loginUser(userPayload); 
           
           onClose();
 
-          // Aiguillage automatique si l'utilisateur possède les privilèges d'administration
-          if (userPayload.role === 'admin') {
-            navigate('/admin');
-          } else {
-            // Optionnel : recharge la fenêtre pour forcer la mise à jour des composants distants
-            window.location.reload();
-          }
+          // Rediriger tout le monde vers l'accueil
+          navigate('/');
         } else {
           setError("Impossible de charger le profil utilisateur.");
         }
@@ -87,8 +83,8 @@ const AuthModal = ({ isOpen, onClose }) => {
       {/* Arrière-plan flouté sombre transparent */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose}></div>
       
-      {/* Conteneur blanc minimaliste (Fidèle à la maquette) */}
-      <div className="relative w-full max-w-md bg-white border border-zinc-200 p-8 text-black shadow-2xl rounded-none text-left z-10 animate-in fade-in zoom-in-95 duration-200">
+      {/* Conteneur blanc minimaliste avec bords arrondis */}
+      <div className="relative w-full max-w-md bg-white/95 backdrop-blur-xl border border-zinc-100 p-8 text-black shadow-2xl rounded-3xl text-left z-10 animate-in fade-in zoom-in-95 duration-300">
         
         {/* Bouton de fermeture discret [X] */}
         <button 
@@ -99,7 +95,7 @@ const AuthModal = ({ isOpen, onClose }) => {
         </button>
         
         {/* Titre Principal de la Modale */}
-        <h2 className="text-sm font-black uppercase tracking-widest text-center mb-8 font-sans">
+        <h2 className="text-xl font-black uppercase tracking-wider text-center mb-8 font-sans">
           {isRegister ? "Rejoindre le Club" : "Espace Supporter"}
         </h2>
 
@@ -115,26 +111,28 @@ const AuthModal = ({ isOpen, onClose }) => {
           {isRegister && (
             <div>
               <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Nom Complet</label>
-              <input 
-                type="text" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                required 
-                placeholder="Ex: Yassine Frikha"
-                className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3 text-xs text-black outline-none transition-all rounded-none font-medium" 
-              />
+                <input 
+                  type="text" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                  required 
+                  placeholder="Ex: Yassine Frikha"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium" 
+                />
             </div>
           )}
 
           <div>
-            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Adresse E-mail</label>
+            <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">
+              {isRegister ? "Adresse E-mail" : "E-mail ou Numéro de téléphone"}
+            </label>
             <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+              type={isRegister ? "email" : "text"} 
+              value={identifier} 
+              onChange={(e) => setIdentifier(e.target.value)} 
               required 
-              placeholder="Ex: supporter@css.tn"
-              className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3 text-xs text-black outline-none transition-all rounded-none font-medium" 
+              placeholder={isRegister ? "Ex: supporter@css.tn" : "Ex: supporter@css.tn ou 216..."}
+              className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium" 
             />
           </div>
 
@@ -146,7 +144,7 @@ const AuthModal = ({ isOpen, onClose }) => {
               onChange={(e) => setPassword(e.target.value)} 
               required 
               placeholder="••••••••"
-              className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3 text-xs text-black outline-none transition-all rounded-none font-medium" 
+              className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium" 
             />
           </div>
 
@@ -154,33 +152,33 @@ const AuthModal = ({ isOpen, onClose }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Téléphone</label>
-                <input 
-                  type="text" 
-                  value={phoneNumber} 
-                  onChange={(e) => setPhoneNumber(e.target.value)} 
-                  placeholder="216..."
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3 text-xs text-black outline-none transition-all rounded-none font-medium" 
-                />
+                  <input 
+                    type="text" 
+                    value={phoneNumber} 
+                    onChange={(e) => setPhoneNumber(e.target.value)} 
+                    placeholder="216..."
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium" 
+                  />
               </div>
               <div>
                 <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">Ville (Tunisie)</label>
-                <input 
-                  type="text" 
-                  value={city} 
-                  onChange={(e) => setCity(e.target.value)} 
-                  placeholder="Ex: Sfax"
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white px-4 py-3 text-xs text-black outline-none transition-all rounded-none font-medium" 
-                />
+                  <input 
+                    type="text" 
+                    value={city} 
+                    onChange={(e) => setCity(e.target.value)} 
+                    placeholder="Ex: Sfax"
+                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium" 
+                  />
               </div>
             </div>
           )}
 
           {/* Bouton d'action principal */}
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full bg-black text-white hover:bg-zinc-800 font-bold py-3.5 text-xs tracking-widest uppercase transition-all duration-300 mt-6 cursor-pointer rounded-none disabled:bg-zinc-400"
-          >
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full bg-black text-white hover:bg-zinc-800 font-bold py-4 text-xs tracking-widest uppercase transition-all duration-300 mt-6 cursor-pointer rounded-xl disabled:bg-zinc-400 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            >
             {loading ? "Vérification..." : isRegister ? "Créer mon compte" : "Se connecter"}
           </button>
         </form>

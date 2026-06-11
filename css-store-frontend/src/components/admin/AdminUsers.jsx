@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from '../../context/UserContext';
+import toast from 'react-hot-toast';
 
 const AdminUsers = () => {
+  const { token } = useUser();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users');
+      const res = await axios.get('http://localhost:5000/api/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setUsers(res.data);
       setLoading(false);
     } catch (err) {
@@ -21,26 +26,33 @@ const AdminUsers = () => {
   }, []);
 
   const handleChangeRole = async (id, currentRole) => {
-    // Cycle de basculement des rôles définis dans ton User.js
     let nextRole = 'supporter';
     if (currentRole === 'supporter') nextRole = 'premium_subscriber';
     else if (currentRole === 'premium_subscriber') nextRole = 'admin';
 
     try {
-      await axios.put(`http://localhost:5000/api/users/${id}/role`, { role: nextRole });
-      fetchUsers();
+      const res = await axios.put(`http://localhost:5000/api/users/${id}/role`, { role: nextRole }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsers(users.map(u => (u._id === id ? res.data : u)));
+      toast.success("Privilèges modifiés avec succès !");
     } catch (err) {
-      alert("Erreur lors de la modification des privilèges");
+      console.error(err);
+      toast.error("Erreur lors de la modification des privilèges");
     }
   };
 
   const handleDeleteUser = async (id) => {
-    if (window.confirm("Voulez-vous vraiment bannir/supprimer cet utilisateur définitivement ?")) {
+    if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/${id}`);
-        fetchUsers();
+        await axios.delete(`http://localhost:5000/api/users/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUsers(users.filter(u => u._id !== id));
+        toast.success("Utilisateur supprimé");
       } catch (err) {
-        alert("Erreur lors de la suppression de l'utilisateur");
+        console.error(err);
+        toast.error("Erreur lors de la suppression de l'utilisateur");
       }
     }
   };

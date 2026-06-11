@@ -156,9 +156,9 @@ const MaillotsPage = () => {
                   const itemImg = product.imageUrl || product.image || (product.images && product.images[0]) || '';
 
                   return (
-                    <div key={product._id} className="bg-white border border-zinc-200 rounded-sm overflow-hidden flex flex-col justify-between h-full relative group hover:shadow-lg transition-all duration-300">
+                    <div key={product._id} className="bg-white border border-zinc-100 rounded-2xl overflow-hidden flex flex-col justify-between h-full relative group hover:shadow-xl hover:-translate-y-1 hover:border-zinc-200 transition-all duration-300">
                       
-                      <span className="absolute top-3 left-3 bg-black text-white text-[8px] font-black uppercase tracking-widest px-2.5 py-1 z-10 select-none">
+                      <span className="absolute top-3 left-3 bg-black text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full z-10 select-none shadow-sm">
                         NOUVEAU
                       </span>
 
@@ -198,7 +198,7 @@ const MaillotsPage = () => {
                         
                         <button 
                           onClick={() => addToCart(product, 'M')}
-                          className="w-full mt-4 bg-black text-white hover:bg-zinc-800 font-bold py-2.5 text-[9px] tracking-widest transition-all duration-300 uppercase flex items-center justify-center gap-2 cursor-pointer border-none rounded-none"
+                          className="w-full mt-4 bg-black text-white hover:bg-zinc-800 font-bold py-3.5 text-[9px] tracking-widest transition-all duration-300 uppercase flex items-center justify-center gap-2 cursor-pointer border-none rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5"
                         >
                           🛒 AJOUTER AU PANIER
                         </button>

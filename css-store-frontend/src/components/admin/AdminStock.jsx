@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const AdminStock = () => {
   const [products, setProducts] = useState([]);
@@ -38,12 +39,12 @@ const AdminStock = () => {
       const cleanedPrice = parseFloat(price.toString().replace(',', '.'));
 
       if (isNaN(cleanedPrice)) {
-        alert("Veuillez saisir un prix numérique valide.");
+        toast.error("Veuillez saisir un prix numérique valide.");
         return;
       }
 
       // 2. Envoi du payload complet incluant la description requise par Mongoose
-      await axios.post('http://localhost:5000/api/products', {
+      const res = await axios.post('http://localhost:5000/api/products', {
         name,
         category, 
         price: cleanedPrice,
@@ -56,11 +57,12 @@ const AdminStock = () => {
       setShowModal(false);
       // Réinitialisation complète des champs
       setName(''); setCategory('Matchwear'); setPrice(''); setStock(''); setImageUrl('');
+      setProducts([...products, res.data]);
       fetchProducts(); 
-      alert("Produit ajouté avec succès au CSS Store ! 🖤🤍");
+      toast.success("Produit ajouté avec succès au CSS Store ! 🖤🤍");
     } catch (err) {
       console.error("Détails de l'erreur 400 :", err.response?.data);
-      alert(`Erreur de validation : ${err.response?.data?.message || "Données incorrectes ou champ manquant"}`);
+      toast.error(`Erreur de validation : ${err.response?.data?.message || "Données incorrectes ou champ manquant"}`);
     }
   };
 
@@ -70,11 +72,11 @@ const AdminStock = () => {
     try {
       const cleanedPrice = parseFloat(price.toString().replace(',', '.'));
       if (isNaN(cleanedPrice)) {
-        alert("Veuillez saisir un prix numérique valide.");
+        toast.error("Veuillez saisir un prix numérique valide.");
         return;
       }
 
-      await axios.put(`http://localhost:5000/api/products/${editingProduct._id}`, {
+      const res = await axios.put(`http://localhost:5000/api/products/${editingProduct._id}`, {
         name,
         category,
         price: cleanedPrice,
@@ -85,10 +87,11 @@ const AdminStock = () => {
       setShowModal(false);
       setEditingProduct(null);
       setName(''); setCategory('Matchwear'); setPrice(''); setStock(''); setImageUrl('');
+      setProducts(products.map(p => (p._id === editingProduct._id ? res.data : p)));
       fetchProducts();
-      alert("Produit mis à jour avec succès ! 🖤🤍");
+      toast.success("Produit mis à jour avec succès ! 🖤🤍");
     } catch (err) {
-      alert(`Erreur lors de la mise à jour : ${err.response?.data?.message || "Données incorrectes"}`);
+      toast.error(`Erreur lors de la mise à jour : ${err.response?.data?.message || "Données incorrectes"}`);
     }
   };
 
@@ -107,9 +110,11 @@ const AdminStock = () => {
     if (window.confirm("Voulez-vous vraiment supprimer cet article du catalogue ?")) {
       try {
         await axios.delete(`http://localhost:5000/api/products/${id}`);
+        setProducts(products.filter(p => p._id !== id));
         fetchProducts();
+        toast.success("Produit supprimé !");
       } catch (err) {
-        alert("Erreur lors de la suppression");
+        toast.error("Erreur lors de la suppression");
       }
     }
   };

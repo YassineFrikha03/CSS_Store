@@ -48,13 +48,21 @@ router.get('/me', authMiddleware, async (req, res) => {
 // =========================================================================
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const identifier = req.body.identifier || req.body.email;
+    const { password } = req.body;
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       return res.status(400).json({ message: "Veuillez remplir tous les champs." });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const searchIdentifier = identifier.toLowerCase().trim();
+    const user = await User.findOne({ 
+      $or: [
+        { email: searchIdentifier },
+        { phoneNumber: identifier.trim() }
+      ] 
+    });
+    
     if (!user) {
       return res.status(400).json({ message: "Identifiants invalides." });
     }
@@ -142,25 +150,53 @@ router.post('/verify-face', async (req, res) => {
   try {
     const { userId, faceDescriptor } = req.body;
 
-    if (!userId || !faceDescriptor || faceDescriptor.length === 0) {
-      return res.status(400).json({ message: "Données biométriques manquantes." });
+    if (!faceDescriptor || faceDescriptor.length === 0) {
+      return res.status(400).json({ message: "Veuillez fournir vos données faciales." });
     }
 
-    const user = await User.findById(userId);
-    if (!user || !user.hasFaceId || !user.faceDescriptor || user.faceDescriptor.length === 0) {
-      return res.status(400).json({ message: "Cet utilisateur n'a pas configuré FaceID." });
-    }
+    let user = null;
 
-    // Calcul de la distance Euclidienne entre les deux descripteurs (tableaux de nombres)
-    let distance = 0;
-    for (let i = 0; i < user.faceDescriptor.length; i++) {
-      distance += Math.pow(user.faceDescriptor[i] - faceDescriptor[i], 2);
-    }
-    distance = Math.sqrt(distance);
+    if (userId) {
+      // Cas 1 : Connexion après saisie email/mot de passe
+      user = await User.findById(userId);
+      if (!user || !user.hasFaceId || !user.faceDescriptor || user.faceDescriptor.length === 0) {
+        return res.status(400).json({ message: "Cet utilisateur n'a pas configuré FaceID." });
+      }
 
-    // Un seuil typique pour face-api.js est 0.6. Si distance < 0.6, c'est la même personne.
-    if (distance > 0.6) {
-      return res.status(401).json({ message: "Reconnaissance faciale échouée. Visage non reconnu." });
+      let distance = 0;
+      for (let i = 0; i < user.faceDescriptor.length; i++) {
+        distance += Math.pow(user.faceDescriptor[i] - faceDescriptor[i], 2);
+      }
+      distance = Math.sqrt(distance);
+
+      if (distance > 0.6) {
+        return res.status(401).json({ message: "Reconnaissance faciale échouée. Visage non reconnu." });
+      }
+    } else {
+      // Cas 2 : Connexion directe avec FaceID (comparaison globale)
+      const users = await User.find({ hasFaceId: true });
+      let bestMatch = null;
+      let minDistance = 0.6; // Seuil de tolérance
+
+      for (const u of users) {
+        if (!u.faceDescriptor || u.faceDescriptor.length === 0) continue;
+        let distance = 0;
+        for (let i = 0; i < u.faceDescriptor.length; i++) {
+          distance += Math.pow(u.faceDescriptor[i] - faceDescriptor[i], 2);
+        }
+        distance = Math.sqrt(distance);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          bestMatch = u;
+        }
+      }
+
+      if (bestMatch) {
+        user = bestMatch;
+      } else {
+        return res.status(401).json({ message: "Reconnaissance faciale échouée. Aucun visage correspondant trouvé." });
+      }
     }
 
     // Visage reconnu : on connecte l'utilisateur
@@ -191,15 +227,22 @@ router.post('/verify-face', async (req, res) => {
 // =========================================================================
 router.post('/forgot-password', async (req, res) => {
   try {
-    const { email } = req.body;
+    const identifier = req.body.identifier || req.body.email;
 
-    if (!email) {
-      return res.status(400).json({ message: "L'adresse e-mail est obligatoire." });
+    if (!identifier) {
+      return res.status(400).json({ message: "L'identifiant (e-mail ou téléphone) est obligatoire." });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const searchIdentifier = identifier.toLowerCase().trim();
+    const user = await User.findOne({
+      $or: [
+        { email: searchIdentifier },
+        { phoneNumber: identifier.trim() }
+      ]
+    });
+
     if (!user) {
-      return res.status(404).json({ message: "Aucun compte associé à cette adresse e-mail." });
+      return res.status(404).json({ message: "Aucun compte associé à cet identifiant." });
     }
 
     const resetToken = crypto.randomBytes(20).toString('hex');
@@ -207,12 +250,27 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 heure
     await user.save();
 
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+
+    // Si c'est un numéro de téléphone qui a été entré (pas l'email)
+    if (identifier.trim() !== user.email && user.phoneNumber === identifier.trim()) {
+      // 📱 SIMULATION D'ENVOI SMS
+      console.log(`\n\n=== 📱 SMS SIMULÉ POUR ${user.phoneNumber} ===`);
+      console.log(`Club Sportif Sfaxien : Vous avez demandé la réinitialisation de votre mot de passe.`);
+      console.log(`Cliquez sur ce lien sécurisé pour le changer : ${resetUrl}`);
+      console.log(`====================================================\n\n`);
+      
+      return res.status(200).json({ 
+        message: "Un message de sécurité vous a été envoyé par SMS ! 📱",
+        simulatedSmsLink: resetUrl 
+      });
+    }
+
+    // Sinon on envoie un e-mail classiquement
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
-
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
 
     const mailOptions = {
       from: `"CSS Store 🖤🤍" <${process.env.EMAIL_USER}>`,

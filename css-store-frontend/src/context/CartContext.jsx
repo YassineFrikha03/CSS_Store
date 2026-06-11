@@ -43,6 +43,11 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  // Vider complètement le panier
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   // Calcul du prix total de la commande
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -76,8 +81,6 @@ export const CartProvider = ({ children }) => {
       const response = await axios.post('http://localhost:5000/api/orders/checkout', orderData);
       
       if (response.status === 201) {
-        setCartItems([]); // Vide le panier après validation
-        setIsCartOpen(false); // Ferme automatiquement la sidebar
         return { success: true, orderId: response.data._id };
       }
     } catch (error) {
@@ -87,7 +90,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, isCartOpen, setIsCartOpen, addToCart, updateQuantity, getTotalPrice, getItemCount, checkoutCart }}>
+    <CartContext.Provider value={{ cartItems, isCartOpen, setIsCartOpen, addToCart, updateQuantity, getTotalPrice, getItemCount, checkoutCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
