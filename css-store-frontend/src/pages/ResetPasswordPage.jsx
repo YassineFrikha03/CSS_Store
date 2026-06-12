@@ -57,13 +57,14 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex bg-white font-sans text-left select-none items-stretch">
+    <div className="w-full min-h-screen flex bg-zinc-950 font-sans text-left select-none items-stretch">
       
       {/* 🖤 CÔTÉ GAUCHE : IDENTIQUE AU DESIGN D'AUTHENTIFICATION (w-5/12) */}
       <div className="hidden md:flex md:w-5/12 bg-black text-white p-16 flex-col justify-between relative min-h-screen">
-        <img src={imagelogin} alt="Image de connexion" className="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale contrast-125 pointer-events-none" />
+        <img src={imagelogin} alt="Image de connexion" className="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale contrast-125 pointer-events-none mix-blend-luminosity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80 pointer-events-none"></div>
 
-        <div className="z-10 flex items-center gap-5 border-b border-zinc-800 pb-6">
+        <div className="z-10 flex items-center gap-5 border-b border-white/10 pb-6">
           <img 
             src={Logo} 
             alt="Logo du Club Sportif Sfaxien" 
@@ -89,23 +90,26 @@ const ResetPasswordPage = () => {
         </div>
       </div>
 
-      {/* ⚪ CÔTÉ DROIT : ZONE DU NOUVEAU FORMULAIRE EN PLEIN ÉCRAN (w-7/12) */}
-      <div className="w-full md:w-7/12 flex items-center justify-center bg-white min-h-screen">
-        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12">
+      {/* ⚪ CÔTÉ DROIT : ZONE FORMULAIRE PREND TOUT L'ESPACE RESTANT (w-7/12) */}
+      <div className="w-full md:w-7/12 flex items-center justify-center bg-zinc-950 min-h-screen relative overflow-hidden">
+        {/* Lueur de fond décorative */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12 z-10">
           
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-black uppercase tracking-wider text-black font-sans">Nouveau mot de passe</h1>
+            <h1 className="text-3xl font-black uppercase tracking-wider text-white font-sans">Nouveau mot de passe</h1>
             <p className="text-xs text-zinc-400 font-medium mt-1.5">Saisissez vos nouveaux identifiants de sécurité</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono p-3 mb-6 font-bold">
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-mono p-3 mb-6 font-bold rounded-lg">
               ⚠️ {error}
             </div>
           )}
 
           {success && (
-            <div className="bg-green-50 border border-green-200 text-green-700 text-[11px] font-mono p-3 mb-6 font-bold👁️">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-mono p-3 mb-6 font-bold rounded-lg👁️">
               🎉 {success} (Redirection vers la page de connexion...)
             </div>
           )}
@@ -121,12 +125,12 @@ const ResetPasswordPage = () => {
                   placeholder="••••••••" 
                   required 
                   autoComplete="new-password"
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white pl-4 pr-11 py-3.5 text-xs text-black outline-none transition-all rounded-none font-medium"
+                  className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 pl-5 pr-11 py-3.5 text-sm text-white outline-none transition-all rounded-xl font-medium placeholder-zinc-600"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
                   tabIndex={-1}
                   aria-label={showPassword ? 'Masquer' : 'Afficher'}
                 >
@@ -145,12 +149,12 @@ const ResetPasswordPage = () => {
                   placeholder="••••••••" 
                   required 
                   autoComplete="new-password"
-                  className="w-full bg-zinc-50 border border-zinc-200 focus:border-black focus:bg-white pl-4 pr-11 py-3.5 text-xs text-black outline-none transition-all rounded-none font-medium"
+                  className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 pl-5 pr-11 py-3.5 text-sm text-white outline-none transition-all rounded-xl font-medium placeholder-zinc-600"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
                   tabIndex={-1}
                   aria-label={showConfirmPassword ? 'Masquer' : 'Afficher'}
                 >
@@ -162,7 +166,7 @@ const ResetPasswordPage = () => {
             <button 
               type="submit" 
               disabled={loading || success}
-              className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-colors cursor-pointer pt-4 rounded-none disabled:bg-zinc-400 border-none"
+              className="w-full bg-white text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-200 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer rounded-xl disabled:bg-zinc-600 disabled:text-zinc-400 border-none mt-2"
             >
               {loading ? "Enregistrement..." : "Mettre à jour le mot de passe"}
             </button>
@@ -170,7 +174,7 @@ const ResetPasswordPage = () => {
 
           <p className="text-center text-[11px] text-zinc-400 mt-8 font-medium">
             Retourner à la{' '}
-            <Link to="/login" className="text-black font-black underline hover:text-zinc-600">
+            <Link to="/login" className="text-white font-black underline hover:text-zinc-300 ml-1">
               page de connexion
             </Link>
           </p>

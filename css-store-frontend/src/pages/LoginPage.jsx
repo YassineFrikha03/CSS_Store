@@ -116,20 +116,20 @@ const LoginPage = () => {
       // Simulation visuelle du SMS
       if (res.data.simulatedSmsLink) {
         toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-in fade-in slide-in-from-top-4' : 'animate-out fade-out slide-out-to-top-4'} max-w-sm w-full bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl pointer-events-auto border border-zinc-100 p-5 flex flex-col gap-3 duration-300`}>
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+          <div className={`${t.visible ? 'animate-in fade-in slide-in-from-top-4' : 'animate-out fade-out slide-out-to-top-4'} max-w-sm w-full bg-zinc-900/90 backdrop-blur-xl shadow-2xl rounded-3xl pointer-events-auto border border-white/10 p-5 flex flex-col gap-3 duration-300 text-white`}>
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <div className="flex items-center gap-2">
                 <div className="bg-[#25D366] w-6 h-6 rounded-full flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
                 </div>
-                <span className="font-black uppercase tracking-wider text-[10px] text-zinc-500">Messages</span>
+                <span className="font-black uppercase tracking-wider text-[10px] text-zinc-400">Messages</span>
               </div>
-              <span className="text-[10px] font-bold text-zinc-400">À l'instant</span>
+              <span className="text-[10px] font-bold text-zinc-500">À l'instant</span>
             </div>
             
             <div>
-              <h4 className="font-black text-sm uppercase tracking-tight text-black mb-1">Club Sportif Sfaxien</h4>
-              <p className="text-xs text-zinc-600 font-medium leading-relaxed">
+              <h4 className="font-black text-sm uppercase tracking-tight text-white mb-1">Club Sportif Sfaxien</h4>
+              <p className="text-xs text-zinc-400 font-medium leading-relaxed">
                 Vous avez demandé la réinitialisation de votre mot de passe. Cliquez ci-dessous pour le changer.
               </p>
             </div>
@@ -138,13 +138,13 @@ const LoginPage = () => {
               <a 
                 href={res.data.simulatedSmsLink} 
                 onClick={() => toast.dismiss(t.id)}
-                className="flex-1 bg-black text-white py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-zinc-800 transition-colors shadow-lg flex items-center justify-center"
+                className="flex-1 bg-white text-black py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-zinc-200 transition-colors shadow-lg flex items-center justify-center"
               >
                 Modifier
               </a>
               <button 
                 onClick={() => toast.dismiss(t.id)}
-                className="bg-zinc-100 text-zinc-500 hover:text-black hover:bg-zinc-200 py-3 px-4 rounded-xl text-[10px] font-black uppercase transition-colors"
+                className="bg-white/10 text-white hover:bg-white/20 py-3 px-4 rounded-xl text-[10px] font-black uppercase transition-colors border border-white/10"
               >
                 Fermer
               </button>
@@ -171,13 +171,14 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex bg-white font-sans text-left select-none items-stretch">
+    <div className="w-full min-h-screen flex bg-zinc-950 font-sans text-left select-none items-stretch">
       
       {/* 🖤 CÔTÉ GAUCHE : VISUEL IMMERSIF STADE (w-5/12) */}
       <div className="hidden md:flex md:w-5/12 bg-black text-white p-16 flex-col justify-between relative min-h-screen">
-        <img src={imagelogin} alt="Image de connexion" className="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale contrast-125 pointer-events-none" />
+        <img src={imagelogin} alt="Image de connexion" className="absolute inset-0 w-full h-full object-cover opacity-30 filter grayscale contrast-125 pointer-events-none mix-blend-luminosity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80 pointer-events-none"></div>
 
-        <div className="z-10 flex items-center gap-5 border-b border-zinc-800 pb-6">
+        <div className="z-10 flex items-center gap-5 border-b border-white/10 pb-6">
           <img 
             src={Logo} 
             alt="Logo du Club Sportif Sfaxien" 
@@ -197,7 +198,7 @@ const LoginPage = () => {
             Connectez-vous pour continuer votre expérience avec le Club Sportif Sfaxien et accéder à votre espace personnalisé.
           </p>
           
-          <div className="space-y-3.5 pt-6 text-[11px] font-mono tracking-wide text-zinc-300 border-t border-zinc-900">
+          <div className="space-y-3.5 pt-6 text-[11px] font-mono tracking-wide text-zinc-300 border-t border-white/10">
             <div className="flex items-center gap-3">
               <span className="text-zinc-500">🛡️</span> <span className="font-medium">Paiement 100% sécurisé</span>
             </div>
@@ -210,26 +211,29 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <div className="z-10 text-[10px] font-mono tracking-widest text-zinc-600 font-black uppercase">
+        <div className="z-10 text-[10px] font-mono tracking-widest text-zinc-500 font-black uppercase">
           Plus qu'un club, une légende.
         </div>
       </div>
 
       {/* ⚪ CÔTÉ DROIT : ZONE FORMULAIRE PREND TOUT L'ESPACE RESTANT (w-7/12) */}
-      <div className="w-full md:w-7/12 flex items-center justify-center bg-white min-h-screen">
-        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12">
+      <div className="w-full md:w-7/12 flex items-center justify-center bg-zinc-950 min-h-screen relative overflow-hidden">
+        {/* Lueur de fond décorative */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12 z-10">
           
           <div className="text-center mb-8">
-            <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-wider text-black font-sans mb-3">
+            <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-wider text-white font-sans mb-3">
               {step === 'login' ? 'Connexion' : 'Sécurité FaceID'}
             </h1>
-            <p className="text-sm text-zinc-500 font-medium">
+            <p className="text-sm text-zinc-400 font-medium">
               {step === 'login' ? 'Accédez à votre compte supporter' : 'Veuillez confirmer votre identité'}
             </p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono p-3 mb-6 font-bold">
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-mono p-3 mb-6 font-bold rounded-lg">
               ⚠️ {error}
             </div>
           )}
@@ -246,7 +250,7 @@ const LoginPage = () => {
                     placeholder="Ex: supporter@css.tn ou 216..." 
                     required 
                     autoComplete="username"
-                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium"
+                    className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 px-5 py-3.5 text-sm text-white outline-none transition-all rounded-xl font-medium placeholder-zinc-600"
                   />
                 </div>
 
@@ -256,7 +260,7 @@ const LoginPage = () => {
                     <button 
                       type="button" 
                       onClick={handleForgotPassword}
-                      className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors cursor-pointer bg-transparent border-none p-0 outline-none"
+                      className="text-[10px] font-bold text-zinc-500 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 outline-none"
                     >
                       Mot de passe oublié ?
                     </button>
@@ -269,12 +273,12 @@ const LoginPage = () => {
                       placeholder="••••••••"
                       required
                       autoComplete="current-password"
-                      className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white pl-5 pr-11 py-3.5 text-sm text-black outline-none transition-all rounded-xl font-medium"
+                      className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 pl-5 pr-11 py-3.5 text-sm text-white outline-none transition-all rounded-xl font-medium placeholder-zinc-600"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
                       tabIndex={-1}
                       aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                     >
@@ -284,22 +288,22 @@ const LoginPage = () => {
                 </div>
 
                 <div className="flex items-center gap-3 pt-2">
-                  <input type="checkbox" id="remember" className="w-4 h-4 accent-black cursor-pointer border-zinc-300 rounded" />
-                  <label htmlFor="remember" className="text-zinc-500 text-xs cursor-pointer font-medium">Se souvenir de moi</label>
+                  <input type="checkbox" id="remember" className="w-4 h-4 accent-white cursor-pointer border-zinc-700 bg-zinc-900 rounded" />
+                  <label htmlFor="remember" className="text-zinc-400 text-xs cursor-pointer font-medium">Se souvenir de moi</label>
                 </div>
 
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer rounded-xl disabled:bg-zinc-400 border-none mt-2"
+                  className="w-full bg-white text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-200 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer rounded-xl disabled:bg-zinc-600 disabled:text-zinc-400 border-none mt-2"
                 >
                   {loading ? "Vérification..." : "Se connecter"}
                 </button>
               </form>
 
               <div className="relative my-8 text-center w-full">
-                <hr className="border-zinc-200" />
-                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-4 font-mono text-[10px] text-zinc-400 font-bold">OU</span>
+                <hr className="border-white/10" />
+                <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-zinc-950 px-4 font-mono text-[10px] text-zinc-500 font-bold">OU</span>
               </div>
 
               <div className="space-y-2.5 text-[11px] font-bold w-full">
@@ -309,7 +313,7 @@ const LoginPage = () => {
                     setPendingUserId(null);
                     setStep('face_scan');
                   }}
-                  className="w-full border border-zinc-200 bg-white py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm hover:shadow-md cursor-pointer text-zinc-700 rounded-xl font-bold group"
+                  className="w-full border border-white/10 bg-white/5 py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-white/10 hover:border-white/20 transition-all shadow-sm cursor-pointer text-white rounded-xl font-bold group"
                 >
                   <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v2m10-4h4a2 2 0 012 2v2M4 16v2a2 2 0 002 2h4m10-4v2a2 2 0 01-2 2h-4m-4-6a3 3 0 100-6 3 3 0 000 6z"></path>
@@ -320,7 +324,7 @@ const LoginPage = () => {
                 <button 
                   type="button" 
                   onClick={handleGoogleLogin}
-                  className="w-full border border-zinc-200 bg-white py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-zinc-50 hover:border-zinc-300 transition-all shadow-sm hover:shadow-md cursor-pointer text-zinc-700 rounded-xl font-bold group"
+                  className="w-full border border-white/10 bg-white/5 py-3.5 px-4 flex items-center justify-center gap-3 hover:bg-white/10 hover:border-white/20 transition-all shadow-sm cursor-pointer text-white rounded-xl font-bold group"
                 >
                   <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -335,14 +339,14 @@ const LoginPage = () => {
                   <button 
                     type="button" 
                     disabled
-                    className="w-full border border-zinc-100 bg-zinc-50 py-3.5 px-4 flex items-center justify-center gap-3 text-zinc-300 rounded-xl font-bold cursor-not-allowed select-none"
+                    className="w-full border border-white/5 bg-white/5 py-3.5 px-4 flex items-center justify-center gap-3 text-zinc-600 rounded-xl font-bold cursor-not-allowed select-none opacity-50"
                   >
                     <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#d4d4d8"/>
                     </svg>
                     <span>Continuer avec Facebook</span>
                   </button>
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black uppercase tracking-widest text-zinc-300 bg-zinc-100 px-2 py-0.5 rounded-sm">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black uppercase tracking-widest text-zinc-500 bg-white/10 px-2 py-0.5 rounded-sm">
                     Bientôt
                   </span>
                 </div>
@@ -350,18 +354,18 @@ const LoginPage = () => {
 
               <p className="text-center text-[11px] text-zinc-400 mt-8 font-medium">
                 Vous n'avez pas de compte ?{' '}
-                <Link to="/register" className="text-black font-black underline hover:text-zinc-600 ml-1">
+                <Link to="/register" className="text-white font-black underline hover:text-zinc-300 ml-1">
                   Créer un compte
                 </Link>
               </p>
             </>
           ) : (
-            <div className="w-full flex flex-col items-center animate-fade-in">
+            <div className="w-full flex flex-col items-center animate-fade-in text-white">
               <FaceScanner mode="login" onScanSuccess={handleFaceScanSuccess} />
               
               <button 
                 onClick={() => setStep('login')}
-                className="mt-6 text-xs text-zinc-500 hover:text-black transition-colors underline cursor-pointer"
+                className="mt-6 text-xs text-zinc-400 hover:text-white transition-colors underline cursor-pointer"
               >
                 Annuler et utiliser le mot de passe uniquement
               </button>

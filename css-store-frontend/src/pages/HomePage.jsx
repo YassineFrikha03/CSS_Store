@@ -6,12 +6,11 @@ import ProductGrid from '../components/ProductGrid';
 import PromoBanner from '../components/PromoBanner';
 import TrustBadges from '../components/TrustBadges';
 import ReviewsSection from '../components/ReviewsSection';
-import Footer from '../components/Footer';
 
 const HomePage = ({ currentCategory }) => {
   const navigate = useNavigate();
   return (
-    <div className="w-full bg-[#F9F9F9]">
+    <div className="w-full bg-zinc-950 text-white min-h-screen">
       {/* 1. Grand Banner Hero avec les joueurs du CSS et le blason de 1928 */}
       <HeroSlider />
 
@@ -20,9 +19,9 @@ const HomePage = ({ currentCategory }) => {
 
       {/* 3. Section "PRODUITS POPULAIRES" (Grille de produits verticale avec prix et étoiles) */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-        <div className="flex justify-between items-center mb-8 border-b border-zinc-200 pb-4">
-          <h2 className="text-xl font-black uppercase tracking-wider text-black">Produits Populaires</h2>
-          <button onClick={() => navigate('/textiles')} className="text-xs font-bold uppercase tracking-wider text-zinc-600 hover:text-black flex items-center gap-1 cursor-pointer">
+        <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+          <h2 className="text-xl md:text-3xl font-black uppercase tracking-wider text-white">Produits Populaires</h2>
+          <button onClick={() => navigate('/textiles')} className="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition-colors flex items-center gap-1 cursor-pointer">
             Voir Tout &rarr;
           </button>
         </div>

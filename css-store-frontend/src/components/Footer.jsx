@@ -5,7 +5,7 @@ import Logo from '../assets/logocss.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#0A0A0A] text-zinc-400 text-xs pt-16 pb-8 border-t border-zinc-800/50 font-sans mt-auto">
+    <footer className="bg-zinc-950 text-zinc-400 text-xs pt-16 pb-8 border-t border-white/10 font-sans mt-auto relative z-10">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
         
         {/* 1. Colonne Identité & Réseaux Sociaux */}

@@ -81,13 +81,14 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex bg-white font-sans text-left select-none items-stretch">
+    <div className="w-full min-h-screen flex bg-zinc-950 font-sans text-left select-none items-stretch">
       
       {/* 🖤 CÔTÉ GAUCHE : VISUEL IMMERSIF ET LOGO OFFICIEL CSS AGRANDI (w-5/12) */}
       <div className="hidden md:flex md:w-5/12 bg-black text-white p-16 flex-col justify-between relative min-h-screen">
-        <img src={imagelogin} alt="Image d'ambiance stade" className="absolute inset-0 w-full h-full object-cover opacity-20 filter grayscale contrast-125 pointer-events-none" />
+        <img src={imagelogin} alt="Image d'ambiance stade" className="absolute inset-0 w-full h-full object-cover opacity-30 filter grayscale contrast-125 pointer-events-none mix-blend-luminosity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80 pointer-events-none"></div>
 
-        <div className="z-10 flex items-center gap-5 border-b border-zinc-800 pb-6">
+        <div className="z-10 flex items-center gap-5 border-b border-white/10 pb-6">
           <img 
             src={Logo} 
             alt="Logo du Club Sportif Sfaxien" 
@@ -107,7 +108,7 @@ const RegisterPage = () => {
             Créez votre compte et profitez d'une expérience exclusive sur notre boutique officielle.
           </p>
           
-          <div className="space-y-3.5 pt-6 text-[11px] font-mono tracking-wide text-zinc-300 border-t border-zinc-900">
+          <div className="space-y-3.5 pt-6 text-[11px] font-mono tracking-wide text-zinc-300 border-t border-white/10">
             <div className="flex items-center gap-3">
               <span className="text-zinc-500">⭐</span> <span>Offres et promotions exclusives</span>
             </div>
@@ -123,23 +124,25 @@ const RegisterPage = () => {
           </div>
         </div>
 
-        <div className="z-10 text-[10px] font-mono tracking-widest text-zinc-600 font-black uppercase">
+        <div className="z-10 text-[10px] font-mono tracking-widest text-zinc-500 font-black uppercase">
           Plus qu'un club, une légende.
         </div>
       </div>
 
       {/* ⚪ CÔTÉ DROIT : ZONE FORMULAIRE PREND TOUT L'ESPACE RESTANT (w-7/12) */}
-      <div className="w-full md:w-7/12 flex items-center justify-center bg-white min-h-screen">
-        {/* 🛠️ max-w-xl retiré et w-full appliqué pour occuper 100% de la largeur de droite */}
-        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12">
+      <div className="w-full md:w-7/12 flex items-center justify-center bg-zinc-950 min-h-screen relative overflow-hidden">
+        {/* Lueur de fond décorative */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="w-full h-full flex flex-col justify-center px-8 sm:px-16 md:px-24 py-12 z-10">
           
           <div className="text-center mb-6">
-            <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-wider text-black font-sans mb-3">Créer un compte</h1>
-            <p className="text-sm text-zinc-500 font-medium">Rejoignez la famille du Club Sportif Sfaxien</p>
+            <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-wider text-white font-sans mb-3">Créer un compte</h1>
+            <p className="text-sm text-zinc-400 font-medium">Rejoignez la famille du Club Sportif Sfaxien</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono p-3 mb-5 font-bold">
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-mono p-3 mb-5 font-bold rounded-lg">
               ⚠️ {error}
             </div>
           )}
@@ -156,7 +159,7 @@ const RegisterPage = () => {
                     placeholder="Votre prénom" 
                     required 
                     autoComplete="given-name" 
-                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                    className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
                   />
               </div>
               <div>
@@ -168,7 +171,7 @@ const RegisterPage = () => {
                     placeholder="Votre nom" 
                     required 
                     autoComplete="family-name" 
-                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                    className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
                   />
               </div>
             </div>
@@ -182,7 +185,7 @@ const RegisterPage = () => {
                 placeholder="Entrez votre e-mail" 
                 required 
                 autoComplete="email" 
-                className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
               />
             </div>
 
@@ -196,7 +199,7 @@ const RegisterPage = () => {
                     placeholder="+216 XX XXX XXX" 
                     required 
                     autoComplete="tel" 
-                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                    className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
                   />
               </div>
               <div>
@@ -207,7 +210,7 @@ const RegisterPage = () => {
                     onChange={e => setCity(e.target.value)} 
                     placeholder="Ex: Sfax, Tunis, Sousse..." 
                     required 
-                    className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                    className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 px-5 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
                   />
               </div>
             </div>
@@ -223,12 +226,12 @@ const RegisterPage = () => {
                       placeholder="Créez un mot de passe" 
                       required 
                       autoComplete="new-password" 
-                      className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white pl-5 pr-11 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                      className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 pl-5 pr-11 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
                     />
                   <button
                     type="button"
                     onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
                     tabIndex={-1}
                     aria-label={showPassword ? 'Masquer' : 'Afficher'}
                   >
@@ -246,12 +249,12 @@ const RegisterPage = () => {
                       placeholder="Confirmez votre mot de passe" 
                       required 
                       autoComplete="new-password" 
-                      className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-black focus:ring-4 focus:ring-black/5 focus:bg-white pl-5 pr-11 py-3 text-sm outline-none transition-all rounded-xl font-medium text-black" 
+                      className="w-full bg-white/5 border border-white/10 focus:border-white focus:bg-white/10 pl-5 pr-11 py-3 text-sm outline-none transition-all rounded-xl font-medium text-white placeholder-zinc-600" 
                     />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
                     tabIndex={-1}
                     aria-label={showConfirmPassword ? 'Masquer' : 'Afficher'}
                   >
@@ -262,7 +265,7 @@ const RegisterPage = () => {
             </div>
 
             {/* SECTION FACE ID */}
-            <div className="pt-2 border-t border-zinc-100">
+            <div className="pt-2 border-t border-white/10">
               <label className="flex items-center gap-2 cursor-pointer mb-3">
                 <input 
                   type="checkbox" 
@@ -271,9 +274,9 @@ const RegisterPage = () => {
                     setEnableFaceId(e.target.checked);
                     if (!e.target.checked) setFaceDescriptor(null);
                   }}
-                  className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
+                  className="w-4 h-4 accent-white cursor-pointer rounded border-zinc-700 bg-zinc-900"
                 />
-                <span className="text-xs font-bold text-black uppercase tracking-widest">Activer FaceID (Connexion Rapide)</span>
+                <span className="text-xs font-bold text-white uppercase tracking-widest">Activer FaceID (Connexion Rapide)</span>
               </label>
 
               {enableFaceId && (
@@ -283,7 +286,7 @@ const RegisterPage = () => {
                     onScanSuccess={(descriptor) => setFaceDescriptor(descriptor)} 
                   />
                   {faceDescriptor && (
-                    <p className="text-xs text-emerald-600 font-bold mt-2 text-center">Empreinte faciale sécurisée ✔</p>
+                    <p className="text-xs text-emerald-400 font-bold mt-2 text-center">Empreinte faciale sécurisée ✔</p>
                   )}
                 </div>
               )}
@@ -295,17 +298,17 @@ const RegisterPage = () => {
                 id="terms" 
                 checked={agreeTerms} 
                 onChange={e => setAgreeTerms(e.target.checked)} 
-                className="w-4 h-4 accent-black border-zinc-300 mt-0.5 cursor-pointer rounded" 
+                className="w-4 h-4 accent-white border-zinc-700 bg-zinc-900 mt-0.5 cursor-pointer rounded" 
               />
-              <label htmlFor="terms" className="text-zinc-500 text-xs leading-snug cursor-pointer font-medium">
-                J'accepte les <span className="text-black font-bold underline">Conditions Générales</span> et la <span className="text-black font-bold underline">Politique de Confidentialité</span> de la boutique officielle.
+              <label htmlFor="terms" className="text-zinc-400 text-xs leading-snug cursor-pointer font-medium">
+                J'accepte les <span className="text-white font-bold underline">Conditions Générales</span> et la <span className="text-white font-bold underline">Politique de Confidentialité</span> de la boutique officielle.
               </label>
             </div>
 
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-black text-white py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-800 transition-all cursor-pointer rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:bg-zinc-400 mt-2"
+              className="w-full bg-white text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-zinc-200 transition-all cursor-pointer rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:bg-zinc-600 disabled:text-zinc-400 mt-2 border-none"
             >
               {loading ? "Création du compte..." : "Créer mon compte"}
             </button>
@@ -313,7 +316,7 @@ const RegisterPage = () => {
 
           <p className="text-center text-[11px] text-zinc-400 mt-6 font-medium">
             Vous avez déjà un compte ?{' '}
-            <Link to="/login" className="text-black font-black underline hover:text-zinc-600 ml-1">
+            <Link to="/login" className="text-white font-black underline hover:text-zinc-300 ml-1">
               Se connecter
             </Link>
           </p>
